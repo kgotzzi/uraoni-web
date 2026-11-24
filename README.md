@@ -40,6 +40,7 @@ y abrir http://localhost:8090.
 ## Lista de espera y correo
 
 - **Lista**: el formulario hace `POST /api/lista`. Caddy lo pasa a `uraoni-lista` (127.0.0.1:8787), que guarda el correo en `/var/lib/uraoni-lista/lista.db` y envía la confirmación. Baja: `/api/baja?t=…` (también la de un clic de Gmail y Apple). Si el correo aún no está conectado, las altas se guardan y la confirmación sale sola al conectarlo.
+- **Avisos**: cada alta nueva manda un correo a hola@ con la dirección (responder = escribir a esa persona). La lista completa: Actions → «Lista: enviarme la lista» → Run workflow; llega a hola@.
 - **Ver la lista** (en el servidor): `sqlite3 /var/lib/private/uraoni-lista/lista.db "select email, alta from lista where baja is null"`.
 - **Correo**: Mailcow en `/opt/mailcow-dockerized`, instalado por `.github/workflows/correo.yml`. Mailcow solo escucha en local; Caddy pone el HTTPS de `mail.uraoni.es`.
   - Webmail: https://mail.uraoni.es/SOGo (usuario `hola@uraoni.es`). Panel: https://mail.uraoni.es/admin (usuario `admin`).

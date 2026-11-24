@@ -36,6 +36,7 @@ SMTP_USER = os.environ.get("SMTP_USER", "")
 SMTP_PASS = os.environ.get("SMTP_PASS", "")
 FROM_ADDR = os.environ.get("FROM_ADDR", "hola@uraoni.es")
 REPLY_TO = os.environ.get("REPLY_TO", "hola@uraoni.es")
+NOTIFY_TO = os.environ.get("NOTIFY_TO", "hola@uraoni.es")
 
 EMAIL_RE = re.compile(r"^[^\s@<>\"',;]{1,64}@[A-Za-z0-9.-]{1,190}\.[A-Za-z]{2,24}$")
 LIMIT_PER_HOUR = 6          # altas por IP y hora (la IP no se guarda en disco)
@@ -121,6 +122,58 @@ Si no fuiste tú o ya no quieres avisos, <a href="{baja}" style="color:#5a534b;"
 """
 
 
+def _smtp_send(msg):
+    ctx = ssl.create_default_context()
+    # Conexión local al Mailcow de esta misma máquina: el certificado es de mail.uraoni.es, no de 127.0.0.1.
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=30) as s:
+        s.starttls(context=ctx)
+        s.login(SMTP_USER, SMTP_PASS)
+        s.send_message(msg)
+
+
+def _aviso(asunto, cuerpo, reply_to=None):
+    msg = EmailMessage()
+    msg["Subject"] = asunto
+    msg["From"] = formataddr(("URAONI · web", FROM_ADDR))
+    msg["To"] = NOTIFY_TO
+    msg["Date"] = formatdate(localtime=True)
+    msg["Message-ID"] = make_msgid(domain=FROM_ADDR.split("@")[-1])
+    if reply_to:
+        msg["Reply-To"] = reply_to
+    msg.set_content(cuerpo)
+    _smtp_send(msg)
+
+
+def activos():
+    with db() as con:
+        return con.execute("SELECT email, alta FROM lista WHERE baja IS NULL ORDER BY alta").fetchall()
+
+
+def notify_new(email: str):
+    """Aviso a hola@ de cada alta nueva (salvo las que hace el propio buzón)."""
+    if not (SMTP_USER and SMTP_PASS) or email == NOTIFY_TO:
+        return
+    total = len(activos())
+    try:
+        _aviso(f"Nueva alta en la lista: {email}",
+               f"Se ha apuntado a la lista de espera del Drop 01:\n\n  {email}\n  {time.strftime('%d/%m/%Y %H:%M')}\n\n"
+               f"Ya sois {total} en la lista.\n\nSi respondes a este correo, le escribes directamente a esa persona.\n",
+               reply_to=email)
+    except Exception as e:  # noqa: BLE001
+        log("lista: no se pudo enviar el aviso de alta:", repr(e))
+
+
+def send_summary():
+    filas = activos()
+    lineas = "\n".join(f"{i:>4}. {e}   ({a[8:10]}/{a[5:7]}/{a[0:4]} {a[11:16]})" for i, (e, a) in enumerate(filas, 1))
+    _aviso(f"Lista de espera URAONI: {len(filas)} personas",
+           f"Personas apuntadas a la lista de espera del Drop 01 ({len(filas)}), de la más antigua a la más reciente:\n\n"
+           f"{lineas or '  (todavía nadie)'}\n\nNo incluye a quien se ha dado de baja.\n")
+    log(f"lista: resumen enviado a {NOTIFY_TO} ({len(filas)} personas)")
+
+
 def send_confirmation(email: str, token: str):
     if not (SMTP_USER and SMTP_PASS):
         log("lista: sin credenciales SMTP todavía; alta guardada, la confirmación saldrá al conectar el correo")
@@ -138,16 +191,9 @@ def send_confirmation(email: str, token: str):
     msg.set_content(TXT.format(baja=baja))
     msg.add_alternative(HTML.format(baja=html.escape(baja), site=SITE), subtype="html")
 
-    ctx = ssl.create_default_context()
-    # Conexión local al Mailcow de esta misma máquina: el certificado es de mail.uraoni.es, no de 127.0.0.1.
-    ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
     for intento in range(3):
         try:
-            with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=30) as s:
-                s.starttls(context=ctx)
-                s.login(SMTP_USER, SMTP_PASS)
-                s.send_message(msg)
+            _smtp_send(msg)
             with db() as con:
                 con.execute("UPDATE lista SET confirmacion=? WHERE email=?", (time.strftime("%Y-%m-%d %H:%M:%S"), email))
             log("lista: confirmación enviada")
@@ -258,7 +304,10 @@ class H(BaseHTTPRequestHandler):
                               (email, time.strftime("%Y-%m-%d %H:%M:%S"), token))
             nuevo = cur.rowcount == 1
         if nuevo:
-            threading.Thread(target=send_confirmation, args=(email, token), daemon=True).start()
+            def _tras_alta(e=email, t=token):
+                send_confirmation(e, t)
+                notify_new(e)
+            threading.Thread(target=_tras_alta, daemon=True).start()
         # Misma respuesta si ya estaba: no revelamos quién está en la lista.
         return self._json(200, {"ok": True})
 
@@ -285,4 +334,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) > 1 and sys.argv[1] == "resumen":
+        send_summary()
+    else:
+        main()

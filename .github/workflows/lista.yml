@@ -1,0 +1,31 @@
+# Te envía a hola@uraoni.es un correo con todas las personas apuntadas a la lista de espera.
+# A mano: GitHub → Actions → "Lista: enviarme la lista" → Run workflow.
+# La lista nunca aparece en GitHub: solo viaja del servidor a tu buzón.
+name: "Lista: enviarme la lista"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [".github/workflows/lista.yml"]
+
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      HOST: 194.26.100.38
+    steps:
+      - name: Preparar el acceso SSH
+        env:
+          KEY: ${{ secrets.SERVER_SSH_KEY }}
+        run: |
+          if [ -z "$KEY" ]; then echo "::error::Falta el secreto SERVER_SSH_KEY."; exit 1; fi
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -t ed25519 "$HOST" > ~/.ssh/known_hosts 2>/dev/null
+          printf 'Host srv\n  HostName %s\n  User root\n  BatchMode yes\n  ConnectTimeout 20\n' "$HOST" > ~/.ssh/config
+
+      - name: Enviar la lista a hola@uraoni.es
+        run: |
+          ssh srv 'set -a; . /etc/uraoni/lista.env; set +a; STATE_DIRECTORY=/var/lib/private/uraoni-lista python3 /opt/uraoni-lista/lista.py resumen'
