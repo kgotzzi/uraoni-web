@@ -100,6 +100,13 @@ api(){ # método ruta [json]
 }
 
 paso "Esperando a que Mailcow arranque (la primera vez tarda unos minutos)"
+for i in $(seq 1 60); do
+  docker compose logs --no-color --tail 200 php-fpm-mailcow 2>/dev/null | grep -q 'ready to handle connections' && break
+  sleep 10
+done
+# nginx guarda la dirección interna de PHP al arrancar; tras reinicios puede quedarse con una vieja
+docker compose restart nginx-mailcow rspamd-mailcow >/dev/null
+sleep 5
 for i in $(seq 1 120); do
   if api GET get/status/version 2>/dev/null | jq -e '.version' >/dev/null 2>&1; then echo "Listo."; break; fi
   if [ "$i" = 120 ]; then
