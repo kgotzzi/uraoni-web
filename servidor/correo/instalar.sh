@@ -100,9 +100,9 @@ api(){ # método ruta [json]
 }
 
 paso "Esperando a que Mailcow arranque (la primera vez tarda unos minutos)"
-for i in $(seq 1 60); do
+for i in $(seq 1 120); do
   if api GET get/status/version 2>/dev/null | jq -e '.version' >/dev/null 2>&1; then echo "Listo."; break; fi
-  if [ "$i" = 60 ]; then
+  if [ "$i" = 120 ]; then
     echo "::error::Mailcow no responde"
     docker compose ps --format 'table {{.Service}}\t{{.Status}}'
     for s in mysql-mailcow php-fpm-mailcow nginx-mailcow; do echo "--- $s"; docker compose logs --no-color --tail 40 "$s" 2>&1 | grep -viE 'password|pass=' ; done
