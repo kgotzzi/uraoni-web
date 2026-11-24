@@ -161,6 +161,9 @@ section{position:relative}
 .tag::after{content:"";position:absolute;bottom:100%;left:50%;width:1px;height:40px;background:#1f1b18;opacity:.6}
 .tag--out{background:#1f1b18;color:var(--crudo)}
 .tag--in{background:var(--red);color:var(--crudo)}
+.tag--back{background:#5a534b;color:var(--crudo)}
+.tag[hidden],.views button[hidden],.backs[hidden]{display:none}
+@media (max-width:860px){.fit__tags{gap:6px}.tag{width:36px;height:82px;font-size:10px;padding-bottom:10px}.views{gap:8px;flex-wrap:wrap}.views button{white-space:nowrap;font-size:13px;padding:0 12px 0 5px;gap:6px}.views button i{width:24px;height:24px}}
 .tag[aria-pressed=true]{transform:rotate(180deg) translateY(-10px);box-shadow:0 -10px 18px -8px rgba(27,23,20,.45)}
 .fit__nav{width:48px;height:48px;border-radius:50%;border:1px solid rgba(27,23,20,.22);background:rgba(237,230,218,.7);display:grid;place-items:center;transition:background .2s,transform .2s var(--ease-out)}
 .fit__nav:hover{background:#e2d9ca}.fit__nav:active{transform:scale(.94)}.fit__nav svg{width:18px;height:18px}
@@ -183,6 +186,8 @@ section{position:relative}
 .views button{display:flex;align-items:center;gap:8px;min-height:40px;padding:0 14px 0 6px;border-radius:999px;border:1px solid rgba(27,23,20,.18);font-size:14px;transition:border-color .2s,background .2s}
 .views button i{width:28px;height:28px;border-radius:50%;background-size:cover;background-position:50% 30%;box-shadow:inset 0 0 0 1px rgba(27,23,20,.15)}
 .views button[aria-pressed=true]{border-color:var(--ink);background:#fff8}
+.backs .views button i{background-color:#0b0b0a}
+.panel__hint{margin-top:6px;font-size:13px;line-height:1.5;color:var(--paper-ink-2,#5a534b)}
 .sz{position:relative;display:grid;grid-template-columns:repeat(6,1fr);margin-top:10px;background:var(--ink);border-radius:999px;padding:4px}
 .sz__thumb{position:absolute;top:4px;bottom:4px;left:0;border-radius:999px;background:var(--crudo);box-shadow:0 2px 8px rgba(0,0,0,.35);transition:transform .45s var(--ease-out),width .45s var(--ease-out)}
 .sz button{position:relative;z-index:1;min-height:40px;border-radius:999px;color:var(--crudo-2);font-size:13px;letter-spacing:.04em;transition:color .3s}
@@ -235,6 +240,10 @@ body.bag-open .bag{transform:none}
 /* ---------- NEGRO SOBRE NEGRO (linterna) ---------- */
 .tonal{padding:clamp(90px,10vw,150px) var(--pad);background:#070706}
 .tonal__head{display:flex;justify-content:space-between;align-items:end;gap:30px;flex-wrap:wrap}
+.tonal__head>div{max-width:620px}
+.tonal__front{display:flex;align-items:center;gap:16px;margin:0;color:var(--crudo-2);font-size:14px;line-height:1.45;max-width:340px}
+.tonal__front img{width:96px;height:auto;flex:none;border-radius:6px;background:#e9e2d6;padding:6px}
+.tonal__front b{display:block;color:var(--crudo);font-family:var(--serif);font-weight:400;font-size:20px}
 .tonal__grid{display:grid;grid-template-columns:1.15fr .85fr 1fr;gap:clamp(12px,1.6vw,24px);margin-top:clamp(36px,4vw,60px);align-items:end}
 .tee{position:relative;cursor:zoom-in}
 .tee:nth-child(2){margin-bottom:clamp(40px,6vw,110px)}
@@ -451,6 +460,7 @@ dialog.lb[open] .lb__img{animation:lbin .35s var(--ease-out)}
             <div class="fit__tags" role="group" aria-label="Vista">
               <button class="tag tag--out" type="button" data-v="out" aria-pressed="true">Fuera</button>
               <button class="tag tag--in" type="button" data-v="in" aria-pressed="false">Dentro</button>
+              <button class="tag tag--back" type="button" data-v="back" aria-pressed="false" hidden>Espalda</button>
             </div>
             <button class="fit__zoom" type="button" id="fitZoom" aria-label="Ampliar foto"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9.5 2H14v4.5M6.5 14H2V9.5M14 2 9 7M2 14l5-5"/></svg></button>
           </div>
@@ -467,6 +477,11 @@ dialog.lb[open] .lb__img{animation:lbin .35s var(--ease-out)}
         <div class="views" role="group" aria-label="Vista">
           <button type="button" data-v="out" aria-pressed="true"><i id="swOut"></i>Por fuera</button>
           <button type="button" data-v="in" aria-pressed="false"><i id="swIn"></i>Por dentro</button>
+        </div>
+        <div class="backs" id="fitBacks" hidden>
+          <div class="panel__row"><span>Espalda</span><b id="fitBackLbl">Mataleón</b></div>
+          <div class="views" role="radiogroup" aria-label="Espalda" id="fitBackBtns"></div>
+          <p class="panel__hint">El delantero es igual en las tres y por dentro solo lleva la etiqueta roja. Eliges la espalda.</p>
         </div>
         <div class="panel__row"><span>Talla <b id="fitSizeLbl">M</b></span><span>Unisex · ajustable</span></div>
         <div class="sz" id="fitSizes" role="radiogroup" aria-label="Talla">
@@ -490,21 +505,22 @@ dialog.lb[open] .lb__img{animation:lbin .35s var(--ease-out)}
   <div class="tonal__head">
     <div>
       <h2 class="h2" id="tonal-h">Negro sobre negro.</h2>
-      <p class="lede">Tres camisetas con la ilustración en relieve negro en la espalda. Solo se ve cuando le da la luz: pasa el dedo o el ratón por encima.</p>
+      <p class="lede">Una camiseta, tres espaldas. Por delante las tres son iguales y por dentro solo llevan la etiqueta roja. Lo que eliges es la espalda: una ilustración en relieve negro que solo se ve cuando le da la luz. Pasa el dedo o el ratón por encima.</p>
     </div>
+    <figure class="tonal__front"><img src="assets/rack/tee.webp" alt="Camiseta negra vista de frente, con el monograma pequeño en el pecho" width="96" loading="lazy"><figcaption><b>Delante, igual en las tres</b>Negra, con el monograma en el pecho. Por dentro, solo la etiqueta roja.</figcaption></figure>
   </div>
   <div class="tonal__grid">
-    <figure class="tee" data-lb="assets/img/tonal-mataleon.webp" data-lb-alt="Camiseta Mataleón, espalda en relieve negro">
+    <figure class="tee" data-lb="assets/img/tonal-mataleon.webp" data-lb-alt="Camiseta negro sobre negro, espalda Mataleón en relieve negro">
       <div class="tee__img"><img class="tee__dark" src="assets/img/tonal-mataleon.webp" alt="Camiseta negra Mataleón vista de espalda, relieve negro" loading="lazy"><img class="tee__lit" src="assets/img/tonal-mataleon.webp" alt="" loading="lazy"></div>
-      <figcaption><b>Mataleón</b><span>BJJ</span></figcaption>
+      <figcaption><b>Mataleón</b><span>Espalda · BJJ</span></figcaption>
     </figure>
-    <figure class="tee" data-lb="assets/img/tonal-guardia.webp" data-lb-alt="Camiseta Guardia, espalda en relieve negro">
+    <figure class="tee" data-lb="assets/img/tonal-guardia.webp" data-lb-alt="Camiseta negro sobre negro, espalda Guardia en relieve negro">
       <div class="tee__img"><img class="tee__dark" src="assets/img/tonal-guardia.webp" alt="Camiseta negra Guardia vista de espalda, relieve negro" loading="lazy"><img class="tee__lit" src="assets/img/tonal-guardia.webp" alt="" loading="lazy"></div>
-      <figcaption><b>Guardia</b><span>Boxeo</span></figcaption>
+      <figcaption><b>Guardia</b><span>Espalda · Boxeo</span></figcaption>
     </figure>
-    <figure class="tee" data-lb="assets/img/tonal-dojo.webp" data-lb-alt="Camiseta Dojo, espalda en relieve negro">
+    <figure class="tee" data-lb="assets/img/tonal-dojo.webp" data-lb-alt="Camiseta negro sobre negro, espalda Dojo en relieve negro">
       <div class="tee__img"><img class="tee__dark" src="assets/img/tonal-dojo.webp" alt="Camiseta negra Dojo vista de espalda, relieve negro" loading="lazy"><img class="tee__lit" src="assets/img/tonal-dojo.webp" alt="" loading="lazy"></div>
-      <figcaption><b>Dojo</b><span>Karate</span></figcaption>
+      <figcaption><b>Dojo</b><span>Espalda · Karate</span></figcaption>
     </figure>
   </div>
 </section>
@@ -806,7 +822,8 @@ const pieces=[
   {no:'03',name:'Bomber Sumi',sport:'Boxeo',out:'assets/rack/bomber.webp',in:'assets/rack/bomber-open.webp',print:false,inside:'Satén negro por fuera. Dentro, el Oni lanzando un gancho en tinta sumi-e sobre forro gris.'},
   {no:'04',name:'Sobrecamisa Índigo',sport:'Fuerza',out:'assets/rack/overshirt.webp',in:'assets/rack/overshirt-open-v2.webp',print:false,inside:'Algodón crudo para llevar con chinos. Por dentro, el Oni levantando la barra entre olas índigo.'},
   {no:'05',name:'Capucha Shiro',sport:'BJJ',out:'assets/rack/shiro.webp',in:'assets/img/in-olas.webp',print:true,inside:'Felpa cruda. La capucha va forrada de olas y nubes rojas.'},
-  {no:'06',name:'Camiseta Monograma',sport:'Esencial',out:'assets/rack/tee.webp',in:'assets/img/label.webp',print:true,inside:'La básica: negra, pesada, solo el monograma. Lo de dentro es la etiqueta roja tejida.'}
+  {no:'06',name:'Camiseta negro sobre negro',sport:'Tres espaldas',out:'assets/rack/tee.webp',in:'assets/img/label.webp',print:true,inside:'Una camiseta, tres espaldas. Por delante es igual en las tres: negra, pesada, con el monograma bordado en el pecho. Por dentro no hay estampado: solo la etiqueta roja tejida, la misma que llevan todas las prendas. Lo que eliges es la espalda, en relieve negro: Mataleón (BJJ), Guardia (boxeo) o Dojo (karate).',
+   backs:[{k:'Mataleón',sport:'BJJ',img:'assets/img/tonal-mataleon.webp'},{k:'Guardia',sport:'Boxeo',img:'assets/img/tonal-guardia.webp'},{k:'Dojo',sport:'Karate',img:'assets/img/tonal-dojo.webp'}]}
 ];
 const HANGER='<svg viewBox="0 0 120 62" fill="none" stroke="#1f1b18" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M60 26v-6c0-4 6-5 6-10a6 6 0 0 0-12 0"/><path d="M60 26 6 56h108L60 26Z"/></svg>';
 const rack=document.getElementById('drop'),items=document.getElementById('rackItems'),cap=document.getElementById('rackCap');
@@ -832,7 +849,7 @@ const FAB={
   '03':'Previsto: satén mate de nailon o poliéster con entretela ligera. Forro estampado a todo color.',
   '04':'Previsto: sarga o lona de algodón cruda, 300–380 g/m². Forro de la espalda estampado.',
   '05':'Previsto: felpa de algodón cruda 400–480 g/m². Forro de la capucha en punto fino estampado.',
-  '06':'Previsto: punto de algodón peinado 240–300 g/m², 100 % algodón. Monograma bordado.'};
+  '06':'Previsto: punto de algodón peinado 240–300 g/m², 100 % algodón. Monograma bordado; espalda en tinta negra en relieve.'};
 const CARE=' Lavar a 30 °C del revés, sin lejía ni secadora; planchar a temperatura baja sin pasar por bordados ni estampados.';
 const CLOSE={};
 const fit=document.getElementById('fit'),fOut=document.getElementById('fitOut'),fIn=document.getElementById('fitIn');
@@ -843,11 +860,24 @@ dots.innerHTML=pieces.map((p,i)=>`<button type="button" aria-label="${p.name}" d
 dots.addEventListener('click',e=>{const b=e.target.closest('button');if(b)fill(+b.dataset.i);});
 let fi=0,lastFocus=null,size='M';
 const inSrc=p=>CLOSE[p.no]||p.in;
-const setView=v=>{fit.classList.toggle('is-in',v==='in');viewBtns.forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v));
-  viewLbl.textContent=v==='in'?'Por dentro':'Por fuera';
-  fIn.alt=v==='in'?pieces[fi].name+' por dentro':'';fOut.alt=pieces[fi].name+' por fuera';};
+let back=0;const curBack=()=>pieces[fi].backs?pieces[fi].backs[back]:null;
+const setView=v=>{const p=pieces[fi],bk=curBack();if(v==='back'&&!bk)v='out';
+  fIn.src=v==='back'?bk.img:inSrc(p);fIn.classList.toggle('is-close',v==='back'||p.print);
+  fit.classList.toggle('is-in',v!=='out');viewBtns.forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v));
+  viewLbl.textContent=v==='in'?'Por dentro':v==='back'?'Espalda '+bk.k:'Por fuera';
+  fIn.alt=v==='in'?p.name+' por dentro':v==='back'?p.name+', espalda '+bk.k:'';fOut.alt=p.name+' por fuera';};
+const backBox=document.getElementById('fitBacks'),backBtns=document.getElementById('fitBackBtns');
+function setBack(i,show){const p=pieces[fi];if(!p.backs)return;back=i;
+  [...backBtns.children].forEach((b,k)=>{b.setAttribute('aria-checked',k===i);b.setAttribute('aria-pressed',k===i);b.tabIndex=k===i?0:-1;});
+  document.getElementById('fitBackLbl').textContent=p.backs[i].k;
+  updAdd();if(show)setView('back');}
+backBtns.addEventListener('click',e=>{const b=e.target.closest('button');if(b)setBack(+b.dataset.b,true);});
+backBtns.addEventListener('keydown',e=>{const d=e.key==='ArrowRight'||e.key==='ArrowDown'?1:e.key==='ArrowLeft'||e.key==='ArrowUp'?-1:0;if(!d||!pieces[fi].backs)return;e.preventDefault();const n=pieces[fi].backs.length,i=(back+d+n)%n;setBack(i,true);backBtns.children[i].focus();});
 function fill(i){fi=(i+pieces.length)%pieces.length;const p=pieces[fi];
   fOut.src=p.out;fIn.src=inSrc(p);fIn.classList.toggle('is-close',p.print);
+  const hasB=!!p.backs;backBox.hidden=!hasB;fit.querySelectorAll('[data-v="back"]').forEach(b=>b.hidden=!hasB);
+  backBtns.innerHTML=hasB?p.backs.map((b,k)=>`<button type="button" role="radio" data-b="${k}" aria-checked="false"><i style="background-image:url(${b.img})"></i>${b.k}</button>`).join(''):'';
+  if(hasB)setBack(0,false);
   fNo.textContent=`Drop 01 · ${p.no} / 06 · ${p.sport}`;fName.textContent=p.name;
   document.getElementById('accIn').textContent=p.inside;document.getElementById('accFab').textContent=FAB[p.no]+CARE;
   document.getElementById('swOut').style.backgroundImage=`url(${p.out})`;document.getElementById('swIn').style.backgroundImage=`url(${inSrc(p)})`;
@@ -865,11 +895,12 @@ new ResizeObserver(placeThumb).observe(sz);
 // mi lista
 const LS='uraoni-lista';let list=[];try{list=JSON.parse(localStorage.getItem(LS)||'[]')||[];}catch(e){list=[];}
 const save=()=>{try{localStorage.setItem(LS,JSON.stringify(list));}catch(e){}};
-const has=()=>list.some(x=>x.no===pieces[fi].no&&x.size===size);
-function updAdd(){document.getElementById('fitAddLbl').textContent=has()?`En tu lista · ${size}`:`Guardar en mi lista · ${size}`;}
+const backKey=()=>{const b=curBack();return b?b.k:undefined;};
+const has=()=>list.some(x=>x.no===pieces[fi].no&&x.size===size&&x.back===backKey());
+function updAdd(){const b=backKey(),t=b?`${size} · ${b}`:size;document.getElementById('fitAddLbl').textContent=has()?`En tu lista · ${t}`:`Guardar en mi lista · ${t}`;}
 const bagCount=document.getElementById('bagCount'),bagOpenBtn=document.getElementById('bagOpen');
 function renderBag(){const L=document.getElementById('bagList');
-  L.innerHTML=list.length?list.map((x,k)=>{const p=pieces.find(q=>q.no===x.no);return `<div class="bag__item"><img src="${p.out}" alt=""><div><b>${p.name}</b><span>Talla ${x.size} · ${p.sport}</span></div><button class="bag__rm" type="button" data-k="${k}">Quitar</button></div>`;}).join(''):'<p class="bag__empty">Aún no has guardado ninguna prenda. Elige una en el perchero y marca tu talla.</p>';
+  L.innerHTML=list.length?list.map((x,k)=>{const p=pieces.find(q=>q.no===x.no);return `<div class="bag__item"><img src="${p.out}" alt=""><div><b>${p.name}</b><span>Talla ${x.size} · ${x.back?'Espalda '+x.back:p.sport}</span></div><button class="bag__rm" type="button" data-k="${k}">Quitar</button></div>`;}).join(''):'<p class="bag__empty">Aún no has guardado ninguna prenda. Elige una en el perchero y marca tu talla.</p>';
   const taken=new Set(list.map(x=>x.no)),rec=pieces.find(p=>!taken.has(p.no));
   document.getElementById('bagRec').innerHTML=rec?`<h3>Te puede gustar</h3><div class="bag__recard"><img src="${rec.out}" alt=""><div><b style="font-family:var(--serif);font-weight:400;font-size:20px">${rec.name}</b><br><span style="font-size:13px;color:var(--crudo-2)">${rec.sport} · lo de dentro: ${rec.inside.split('.')[0].toLowerCase()}</span><br><button type="button" data-rec="${rec.no}">Verla</button></div></div>`:'';
   bagCount.textContent=list.length;bagOpenBtn.setAttribute('aria-label',`Mi lista, ${list.length} prendas`);}
@@ -881,7 +912,7 @@ function closeBag(){document.body.classList.remove('bag-open');bag.setAttribute(
 bagOpenBtn.addEventListener('click',e=>{e.preventDefault();openBag();});
 document.getElementById('bagX').addEventListener('click',closeBag);document.getElementById('bagScrim').addEventListener('click',closeBag);
 document.getElementById('bagGo').addEventListener('click',()=>{closeBag();if(rack.classList.contains('is-open'))closeFit();});
-document.getElementById('fitAdd').addEventListener('click',()=>{if(!has()){list.push({no:pieces[fi].no,size});save();}
+document.getElementById('fitAdd').addEventListener('click',()=>{if(!has()){list.push(backKey()?{no:pieces[fi].no,size,back:backKey()}:{no:pieces[fi].no,size});save();}
   renderBag();updAdd();bagCount.classList.remove('bump');bagCount.offsetWidth;bagCount.classList.add('bump');openBag();});
 renderBag();
 function openFit(i){lastFocus=document.activeElement;fill(i);fit.hidden=false;requestAnimationFrame(()=>{rack.classList.add('is-open');placeThumb();});
