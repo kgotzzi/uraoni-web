@@ -1,6 +1,6 @@
 # Te envía a hola@uraoni.es un correo con todas las personas apuntadas a la lista de espera.
 # A mano: GitHub → Actions → "Lista: enviarme la lista" → Run workflow.
-# La lista nunca aparece en GitHub: solo viaja del servidor a tu buzón.
+# La lista nunca aparece en GitHub: solo viaja del servidor a tu buzón (hola@uraoni.es).
 name: "Lista: enviarme la lista"
 
 on:
