@@ -20,7 +20,7 @@ HOST_CORREO=mail.uraoni.es
 MC=/opt/mailcow-dockerized
 CRED=/root/uraoni-correo.txt
 ENVF=/etc/uraoni/lista.env
-umask 077
+umask 022   # Mailcow necesita leer sus ficheros desde los contenedores; los secretos se protegen uno a uno
 
 paso(){ echo; echo "== $*"; }
 aleatoria(){ python3 -c 'import secrets;print(secrets.token_urlsafe(18))'; }
@@ -79,8 +79,17 @@ grep -q '^API_KEY=' mailcow.conf || echo "API_KEY=$(openssl rand -hex 24)" >> ma
 ajusta API_ALLOW_FROM 127.0.0.1,172.22.1.1
 chmod 600 mailcow.conf
 
+# Arreglo de una primera instalación hecha con permisos demasiado cerrados (umask 077)
+if [ "$(stat -c %a data/conf)" != 755 ]; then
+  echo "Reparando permisos de Mailcow."
+  chmod -R u+rwX,go+rX "$MC"
+  chmod 600 mailcow.conf
+  REINICIAR=1
+fi
+
 docker compose pull -q
 docker compose up -d --remove-orphans
+[ "${REINICIAR:-0}" = 1 ] && docker compose restart
 
 API_KEY=$(grep '^API_KEY=' mailcow.conf | cut -d= -f2)
 api(){ # método ruta [json]
@@ -129,9 +138,9 @@ systemctl enable --now uraoni-certs-correo.timer
 
 # ---------------------------------------------------------------- 4. Contraseñas
 paso "Cuentas"
-[ -f "$CRED" ] || : > "$CRED"
+[ -f "$CRED" ] || install -m 600 /dev/null "$CRED"
 lee(){ grep "^$1=" "$CRED" 2>/dev/null | head -1 | cut -d= -f2- || true; }
-guarda(){ grep -v "^$1=" "$CRED" > "$CRED.tmp" || true; echo "$1=$2" >> "$CRED.tmp"; mv "$CRED.tmp" "$CRED"; chmod 600 "$CRED"; }
+guarda(){ install -m 600 /dev/null "$CRED.tmp"; grep -v "^$1=" "$CRED" >> "$CRED.tmp" || true; echo "$1=$2" >> "$CRED.tmp"; mv "$CRED.tmp" "$CRED"; chmod 600 "$CRED"; }
 
 if [ -s /root/.uraoni-mailpass ]; then
   PASS_HUMANA=$(cat /root/.uraoni-mailpass); rm -f /root/.uraoni-mailpass
@@ -183,6 +192,7 @@ done
 # ---------------------------------------------------------------- 5. Servicio de la lista
 paso "Conectar la lista de espera con el correo"
 mkdir -p /etc/uraoni
+install -m 600 /dev/null "$ENVF"
 cat > "$ENVF" <<EOF
 SMTP_HOST=127.0.0.1
 SMTP_PORT=587
