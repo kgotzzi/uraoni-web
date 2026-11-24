@@ -259,8 +259,9 @@ journalctl -u uraoni-lista -n 15 --no-pager -o cat || true
 echo "--- Cola de correo"
 docker compose exec -T postfix-mailcow postqueue -p 2>/dev/null | tail -5 || true
 
-paso "Prueba de salida por el puerto 25 (CubePath lo bloquea hasta que lo pidas)"
-if timeout 8 bash -c 'echo > /dev/tcp/gmail-smtp-in.l.google.com/25' 2>/dev/null; then
+paso "Prueba de salida por el puerto 25 (IPv4; CubePath lo bloquea hasta que lo pidas)"
+IP_GMAIL=$(dig +short @1.1.1.1 A gmail-smtp-in.l.google.com | head -1)
+if timeout 8 bash -c "echo > /dev/tcp/$IP_GMAIL/25" 2>/dev/null; then   # por IPv4, que es por donde sale el correo
   echo "Puerto 25 de salida: ABIERTO. Los correos ya pueden salir."
 else
   echo "::warning::Puerto 25 de salida BLOQUEADO. Los correos se quedan en cola hasta que CubePath lo abra (ver README)."
