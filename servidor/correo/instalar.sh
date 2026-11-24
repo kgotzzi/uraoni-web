@@ -256,8 +256,12 @@ PY
 openssl x509 -in "$MC/data/assets/ssl/cert.pem" -noout -subject -issuer -enddate 2>/dev/null || true
 echo "--- Últimos registros de la lista de espera"
 journalctl -u uraoni-lista -n 15 --no-pager -o cat || true
-echo "--- Cola de correo"
+echo "--- Cola de correo (se reintenta ya lo que esté esperando)"
+docker compose exec -T postfix-mailcow postqueue -f 2>/dev/null || true
+sleep 40
 docker compose exec -T postfix-mailcow postqueue -p 2>/dev/null | tail -5 || true
+echo "--- Últimas entregas"
+docker compose logs --no-color --since 5m postfix-mailcow 2>/dev/null | grep -E 'status=(sent|deferred|bounced)' | sed -E 's/to=<[^@>]{1,3}[^@>]*@/to=<***@/' | tail -8 || true
 
 paso "Prueba de salida por el puerto 25 (IPv4; CubePath lo bloquea hasta que lo pidas)"
 IP_GMAIL=$(dig +short @1.1.1.1 A gmail-smtp-in.l.google.com | head -1)
