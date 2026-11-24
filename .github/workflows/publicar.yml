@@ -1,0 +1,94 @@
+# Publica uraoni.es desde este repositorio (CubePath, uraoni-web-01, 194.26.100.38).
+# Se lanza sola al entrar cambios en main, o a mano en GitHub → Actions → "Publicar en uraoni.es" → Run workflow.
+# Necesita el secreto SERVER_SSH_KEY: la clave privada "GitHub-Deploy" (fichero botigo_deploy del PC del dueño),
+# la misma que usa Botigo. Ver README, apartado Servidor.
+name: Publicar en uraoni.es
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: publicar
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      HOST: 194.26.100.38
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Preparar el acceso SSH
+        env:
+          KEY: ${{ secrets.SERVER_SSH_KEY }}
+        run: |
+          if [ -z "$KEY" ]; then
+            echo "::error::Falta el secreto SERVER_SSH_KEY (clave privada GitHub-Deploy)."; exit 1
+          fi
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -t ed25519 "$HOST" > ~/.ssh/known_hosts 2>/dev/null
+          printf 'Host srv\n  HostName %s\n  User root\n  BatchMode yes\n  ConnectTimeout 20\n' "$HOST" > ~/.ssh/config
+
+      - name: Subir la web y la configuración
+        run: |
+          tar czf web.tgz index.html favicon.png fonts assets
+          scp -q web.tgz srv:/tmp/uraoni-web.tgz
+          scp -q servidor/Caddyfile srv:/tmp/uraoni-Caddyfile
+
+      - name: Publicar en el servidor
+        run: |
+          ssh srv 'bash -s' <<'REMOTO'
+          set -euo pipefail
+          export DEBIAN_FRONTEND=noninteractive
+
+          # 1. Primera vez: instalar Caddy (servidor web con HTTPS automático) y rsync
+          if ! command -v caddy >/dev/null || ! command -v rsync >/dev/null; then
+            apt-get update -q
+            apt-get install -y -q caddy rsync
+          fi
+
+          # 2. La web, sustituyendo la anterior
+          mkdir -p /var/www/uraoni
+          nuevo=$(mktemp -d)
+          tar xzf /tmp/uraoni-web.tgz -C "$nuevo"
+          rsync -a --delete "$nuevo"/ /var/www/uraoni/
+          chmod -R a+rX /var/www/uraoni
+          rm -rf "$nuevo" /tmp/uraoni-web.tgz
+
+          # 3. Comprobar el Caddyfile nuevo antes de aplicarlo
+          caddy validate --config /tmp/uraoni-Caddyfile --adapter caddyfile
+          cp /tmp/uraoni-Caddyfile /etc/caddy/Caddyfile && rm -f /tmp/uraoni-Caddyfile
+          systemctl enable --now caddy
+          systemctl reload caddy || systemctl restart caddy
+
+          # 4. Responde en el propio servidor (HTTP redirige a HTTPS: 308 es correcto)
+          ok=0
+          for i in $(seq 1 15); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: uraoni.es' http://127.0.0.1/ || true)
+            if [ "$code" = 308 ] || [ "$code" = 200 ]; then ok=1; break; fi
+            sleep 2
+          done
+          [ "$ok" = 1 ] || { echo "::error::Caddy no responde"; journalctl -u caddy -n 60 --no-pager; exit 1; }
+
+          # Acceso al servidor solo con clave SSH (nunca con contraseña)
+          printf 'PasswordAuthentication no\nKbdInteractiveAuthentication no\n' > /etc/ssh/sshd_config.d/00-uraoni.conf
+          sshd -t && systemctl reload ssh
+          REMOTO
+
+      - name: Comprobar que se ve en uraoni.es
+        run: |
+          ip=$(getent ahostsv4 uraoni.es | awk 'NR==1{print $1}' || true)
+          if [ "$ip" != "$HOST" ]; then
+            echo "::warning::uraoni.es todavía no apunta a $HOST (ahora: ${ip:-sin respuesta}). La web ya está en el servidor; se verá en cuanto cambie el DNS."
+            exit 0
+          fi
+          for i in $(seq 1 20); do
+            if curl -fsS https://uraoni.es/ | grep -q 'Calma por fuera'; then echo "La web se ve en https://uraoni.es"; exit 0; fi
+            sleep 6
+          done
+          echo "::error::uraoni.es no enseña la web."; exit 1

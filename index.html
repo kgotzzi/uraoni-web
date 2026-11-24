@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0e0d0c">
+<link rel="icon" href="favicon.png">
+<title>URAONI · Calma por fuera. Oni por dentro.</title>
+<meta name="description" content="URAONI (裏鬼): ropa de vestir para gente que entrena. Por fuera, prendas sobrias. Por dentro, el Oni. Drop 01, lista de espera abierta.">
+<style>
+@font-face{font-family:"Instrument Serif";src:url(fonts/instrument-serif-latin-400-normal.woff2) format("woff2");font-weight:400;font-style:normal;font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Instrument Serif";src:url(fonts/instrument-serif-latin-ext-400-normal.woff2) format("woff2");font-weight:400;font-style:normal;font-display:swap;unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Instrument Serif";src:url(fonts/instrument-serif-latin-400-italic.woff2) format("woff2");font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:"Hanken Grotesk";src:url(fonts/hanken-grotesk-latin-300-normal.woff2) format("woff2");font-weight:300;font-display:swap}
+@font-face{font-family:"Hanken Grotesk";src:url(fonts/hanken-grotesk-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Hanken Grotesk";src:url(fonts/hanken-grotesk-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"Kanji";src:url(fonts/kanji-Regular.woff2) format("woff2");font-weight:400;font-display:block}
+@font-face{font-family:"Kanji";src:url(fonts/kanji-Bold.woff2) format("woff2");font-weight:700;font-display:block}
+
+:root{
+  --ink:#0e0d0c; --cloth:#151515; --cloth-2:#1c1b1a; --crudo:#ede6da; --crudo-2:#bdb6aa; --crudo-3:#8f897f;
+  --red:#a3142a; --red-ink:#c4283a; --washi:#efe2c8; --sumi:#1b1714; --indigo:#21365a; --vermilion:#d4462a;
+  --serif:"Instrument Serif","Kanji",ui-serif,Georgia,serif;
+  --sans:"Hanken Grotesk","Kanji",ui-sans-serif,system-ui,sans-serif;
+  --kanji:"Kanji","Instrument Serif",serif;
+  --pad:clamp(20px,5vw,72px);
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --ease-io:cubic-bezier(.65,0,.35,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--ink);color:var(--crudo);-webkit-text-size-adjust:100%;scroll-behavior:smooth;scrollbar-color:#3a3632 var(--ink);scrollbar-width:thin}
+body{font-family:var(--sans);font-weight:400;font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;background:var(--ink) url(assets/plates/fabric.jpg) repeat;background-size:412px}
+::selection{background:var(--red);color:var(--crudo)}
+::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:var(--ink)}::-webkit-scrollbar-thumb{background:#3a3632;border-radius:10px;border:2px solid var(--ink)}
+img{display:block;max-width:100%}
+a{color:inherit;text-underline-offset:.22em;text-decoration-thickness:1px}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--crudo);outline-offset:3px;border-radius:2px}
+input{font:inherit;caret-color:var(--red-ink)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.kanji{font-family:var(--kanji)}
+
+/* ---------- NAV ---------- */
+.nav{position:absolute;inset:0 0 auto 0;z-index:20;background:#151515 url(assets/plates/fabric.jpg) repeat;background-size:412px;display:flex;align-items:center;justify-content:space-between;padding:clamp(14px,2vw,26px) var(--pad);border-bottom:1px solid rgba(237,230,218,.12)}
+.nav__mark img{height:clamp(26px,2.9vw,40px);width:auto}
+.nav__links{display:flex;gap:clamp(18px,2.6vw,40px);list-style:none;font-size:clamp(14px,1.18vw,17px);letter-spacing:.005em}
+.nav__links a{text-decoration:none;color:var(--crudo);opacity:.88;transition:opacity .2s}
+.nav__links a:hover{opacity:1;text-decoration:underline}
+.nav__links .is-cta{opacity:1}
+
+/* ---------- HERO (la tela) ---------- */
+.hero{position:relative;height:100svh;min-height:620px;max-height:1100px;overflow:hidden;background:var(--cloth);isolation:isolate}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero__jacket-slot{position:absolute;left:36%;top:15%;width:27%;height:52%;pointer-events:none}
+.hero__copy{position:absolute;left:10.2%;top:44%;z-index:5;max-width:min(44vw,720px)}
+.hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(3.1rem,6.7vw,6rem);line-height:.96;letter-spacing:-.012em;color:var(--crudo);text-wrap:balance}
+.hero h1 span{display:block}
+.hero__sub{margin-top:clamp(14px,1.6vw,24px);font-size:clamp(15px,1.25vw,18px);color:var(--crudo-2)}
+.join{display:flex;margin-top:clamp(18px,2vw,30px);max-width:420px}
+.join input{flex:1;min-width:0;height:clamp(46px,3.1vw,52px);background:rgba(14,13,12,.55);border:1px solid rgba(237,230,218,.55);border-right:0;border-radius:4px 0 0 4px;padding:0 16px;color:var(--crudo);font-size:15px;outline:none;transition:border-color .2s}
+.join input::placeholder{color:var(--crudo-3)}
+.join input:focus{border-color:var(--crudo)}
+.join input[aria-invalid=true]{border-color:var(--red-ink)}
+.join button{height:clamp(46px,3.1vw,52px);padding:0 20px;background:var(--crudo);color:var(--ink);border-radius:0 4px 4px 0;font-size:15px;font-weight:500;white-space:nowrap;transition:background .2s,transform .2s var(--ease-out)}
+.join button:hover{background:#fff}
+.join button:active{transform:scale(.98)}
+.join__msg{max-width:420px;min-height:1.4em;margin-top:10px;font-size:14px;color:var(--crudo-2)}
+.join__msg.is-error{color:#f08a8f}
+.join.is-done{display:none}
+.done{display:none;margin-top:clamp(18px,2vw,30px);font-size:16px;max-width:420px}
+.done.is-on{display:block}
+.done strong{font-family:var(--serif);font-weight:400;font-size:1.6em;display:block;line-height:1.1;margin-bottom:4px}
+
+.hero__pull{position:absolute;z-index:6;touch-action:none;cursor:grab;border-radius:50%;width:140px;height:140px;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center}
+.hero__pull:active{cursor:grabbing}
+@media (pointer:coarse){.hero__pull{width:200px;height:220px}}
+.hero__pull:focus-visible{outline-offset:-20px}
+.hero__hint{position:absolute;z-index:6;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--crudo);pointer-events:none;transition:opacity .4s;white-space:nowrap}
+.hero__hint svg{width:34px;height:14px;animation:nudge 2.4s var(--ease-io) infinite}
+@keyframes nudge{50%{transform:translate(4px,-3px)}}
+.hero__toggle{position:absolute;z-index:6;right:var(--pad);bottom:calc(76px + 22px);font-size:14px;font-weight:500;min-height:44px;padding:0 16px;border-radius:4px;background:var(--ink);color:var(--crudo);box-shadow:0 0 0 1px rgba(237,230,218,.14),0 6px 18px -6px rgba(0,0,0,.6);transition:background .2s,transform .2s var(--ease-out)}
+.hero__toggle:hover{background:#000}.hero__toggle:active{transform:scale(.98)}
+
+/* marquee band (crudo) */
+.band{position:absolute;left:0;right:0;bottom:0;z-index:7;height:76px;background:var(--crudo);color:var(--ink);overflow:hidden;display:flex;align-items:center}
+.band__track{display:flex;flex-shrink:0;gap:0;animation:run 46s linear infinite;will-change:transform}
+.band__track span{font-size:clamp(17px,1.7vw,24px);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;padding:0 .9em;display:flex;align-items:center;gap:.9em}
+.band__track span::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--red);margin-left:.9em}
+.band__track em{font-style:normal;color:#5f584f}
+.band__track .k{font-family:var(--kanji);letter-spacing:.12em;text-transform:none}
+@keyframes run{to{transform:translateX(-50%)}}
+
+/* ---------- SECTIONS shared ---------- */
+section{position:relative}
+.h2{font-family:var(--serif);font-weight:400;font-size:clamp(2.5rem,5.2vw,5rem);line-height:1;letter-spacing:-.01em;text-wrap:balance}
+.lede{font-size:clamp(16px,1.3vw,19px);color:var(--crudo-2);max-width:56ch;margin-top:20px}
+
+/* ---------- ABRE LA PRENDA (zip, scroll-driven) ---------- */
+.zip{height:220vh;background:var(--ink)}
+.zip__stage{position:sticky;top:0;height:100svh;display:grid;grid-template-columns:1fr minmax(0,1.05fr);align-items:center;gap:clamp(24px,5vw,90px);padding:0 var(--pad);overflow:hidden}
+.zip__copy{max-width:520px}
+.zip__steps{list-style:none;margin-top:36px;display:grid;gap:18px}
+.zip__steps li{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:baseline;color:var(--crudo-3);transition:color .4s}
+.zip__steps li.is-on{color:var(--crudo)}
+.zip__steps b{font-family:var(--serif);font-weight:400;font-size:28px;line-height:1;min-width:1.6em}
+.zip__frame{position:relative;height:min(84svh,880px);aspect-ratio:928/1152;justify-self:center;border-radius:6px;overflow:hidden;background:#8d8478;cursor:zoom-in}
+.zip__frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.zip__closed{clip-path:polygon(0 0,50% 0,50% 0,50% 0,100% 0,100% 100%,0 100%)}
+.zip__frame .zip__pull{position:absolute;inset:auto;left:50%;top:20.5%;width:3.2%;height:auto;object-fit:fill;margin-left:-1.6%;pointer-events:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}
+
+/* ---------- DROP 01: el perchero ---------- */
+.rack{position:relative;background:var(--crudo);color:var(--ink);padding:clamp(80px,9vw,140px) var(--pad) clamp(60px,7vw,100px);overflow:hidden}
+.rack ::selection{background:var(--ink);color:var(--crudo)}
+.rack__head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap}
+.rack .lede{color:#5a534b}
+.rack__count{font-size:14px;color:#5a534b;font-variant-numeric:tabular-nums}
+.rack__wrap{position:relative;margin-top:clamp(28px,4vw,56px)}
+.rack__stage{position:relative;height:calc(clamp(140px,17vw,270px)*1.14 + 56px);transition:filter .5s var(--ease-out),opacity .5s var(--ease-out)}
+.rack__rail{position:absolute;left:2%;right:2%;top:34px;height:7px;border-radius:4px;background:#1f1b18;box-shadow:0 10px 16px -8px rgba(27,23,20,.45)}
+.rack__rail::before,.rack__rail::after{content:"";position:absolute;top:-5px;width:16px;height:16px;border-radius:50%;background:#1f1b18}
+.rack__rail::before{left:-8px}.rack__rail::after{right:-8px}
+.rack__items{position:absolute;left:0;right:0;top:0;bottom:0;perspective:1600px}
+.hang{--w:clamp(140px,17vw,270px);position:absolute;left:0;top:12px;width:var(--w);transition:transform .6s var(--ease-out);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.hang__body{transform-origin:50% 0;transform:rotateY(-22deg) scale(.95);transition:transform .65s var(--ease-out),opacity .4s}
+.hang svg{display:block;width:50%;margin:0 auto;position:relative;z-index:0;overflow:visible}
+/* the hanger sits inside the garment: only the hook shows above the collar */
+.hang img{position:relative;z-index:1;margin-top:-18.8%}
+.hang img{width:100%;height:auto;filter:drop-shadow(0 18px 18px rgba(27,23,20,.28)) drop-shadow(0 3px 4px rgba(27,23,20,.2))}
+.hang.is-hot .hang__body{transform:scale(1.05);animation:sway 1.1s var(--ease-out)}
+@keyframes sway{30%{rotate:2.2deg}60%{rotate:-1.2deg}85%{rotate:.4deg}}
+.rack__items.has-hot .hang:not(.is-hot) .hang__body{opacity:.78}
+.hang:focus-visible{outline:none}.hang:focus-visible img{outline:2px solid var(--ink);outline-offset:6px;border-radius:4px}
+.rack__cap{display:flex;justify-content:center;align-items:baseline;gap:14px;min-height:2.4em;margin-top:6px;text-align:center}
+.rack__cap b{font-family:var(--serif);font-weight:400;font-size:clamp(24px,2.2vw,32px)}
+.rack__cap span{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#5a534b}
+.rack__wrap{transition:min-height .5s var(--ease-out);scroll-margin-top:84px}
+.rack.is-open .rack__wrap{min-height:min(88svh,760px)}
+.rack.is-open .rack__stage,.rack.is-open .rack__cap{filter:blur(10px);opacity:.28;pointer-events:none}
+/* el probador: prenda a la izquierda, ficha flotante a la derecha */
+.fit{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(330px,.85fr);align-items:center;gap:clamp(20px,3vw,56px);opacity:0;visibility:hidden;transition:opacity .45s var(--ease-out),visibility 0s .45s}
+.rack.is-open .fit{opacity:1;visibility:visible;transition:opacity .45s var(--ease-out)}
+.fit__stage{position:relative;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px}
+.fit__fig{position:relative;justify-self:center;height:min(clamp(380px,40vw,580px),74svh);aspect-ratio:.86}
+.fit__box{position:absolute;inset:0}
+.fit__box>img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 0;filter:drop-shadow(0 22px 22px rgba(27,23,20,.3))}
+.fit__out{transition:opacity .5s var(--ease-out),transform .6s var(--ease-out)}
+.fit__in{clip-path:inset(0 0 100% 0);transition:clip-path .8s var(--ease-io)}
+.fit__in.is-close{inset:16% 10% 20%!important;width:80%!important;height:64%!important;object-fit:cover!important;border-radius:6px;background:#efe2c8;box-shadow:0 20px 30px -12px rgba(27,23,20,.45);filter:none!important}
+.fit.is-in .fit__in{clip-path:inset(0 0 0 0)}
+.fit.is-in.is-close-kind .fit__out{opacity:.35;transform:scale(.97)}
+.rack.is-open .fit__fig{animation:fitIn .6s var(--ease-out)}
+@keyframes fitIn{from{transform:translateY(-14px) scale(.96);opacity:0}}
+.fit__tags{position:absolute;right:-2%;top:10%;display:flex;gap:8px;z-index:4}
+.tag{position:relative;width:46px;height:96px;border-radius:4px 4px 6px 6px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;writing-mode:vertical-rl;transform:rotate(180deg);transition:transform .35s var(--ease-out),box-shadow .35s}
+.tag::before{content:"";position:absolute;bottom:10px;left:50%;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--crudo)}
+.tag::after{content:"";position:absolute;bottom:100%;left:50%;width:1px;height:40px;background:#1f1b18;opacity:.6}
+.tag--out{background:#1f1b18;color:var(--crudo)}
+.tag--in{background:var(--red);color:var(--crudo)}
+.tag[aria-pressed=true]{transform:rotate(180deg) translateY(-10px);box-shadow:0 -10px 18px -8px rgba(27,23,20,.45)}
+.fit__nav{width:48px;height:48px;border-radius:50%;border:1px solid rgba(27,23,20,.22);background:rgba(237,230,218,.7);display:grid;place-items:center;transition:background .2s,transform .2s var(--ease-out)}
+.fit__nav:hover{background:#e2d9ca}.fit__nav:active{transform:scale(.94)}.fit__nav svg{width:18px;height:18px}
+.fit__dots{grid-column:1/4;display:flex;justify-content:center;gap:6px;margin-top:6px}
+.fit__dots button{width:22px;height:22px;display:grid;place-items:center}
+.fit__dots button::before{content:"";width:6px;height:3px;border-radius:2px;background:rgba(27,23,20,.25);transition:width .35s var(--ease-out),background .35s}
+.fit__dots button[aria-current=true]::before{width:20px;background:var(--ink)}
+.fit__zoom{position:absolute;bottom:2%;left:2%;width:40px;height:40px;border-radius:4px;display:grid;place-items:center;background:rgba(237,230,218,.9);z-index:4}
+.fit__zoom svg{width:15px;height:15px}
+/* ficha */
+.panel{position:relative;align-self:center;max-height:min(88svh,760px);overflow-y:auto;overscroll-behavior:contain;background:rgba(246,241,233,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(27,23,20,.08);border-radius:10px;padding:26px 26px 18px;box-shadow:0 30px 60px -30px rgba(27,23,20,.45);color:var(--ink);scrollbar-width:thin}
+.panel__x{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;transition:background .2s}
+.panel__x:hover{background:#e2d9ca}.panel__x svg{width:14px;height:14px}
+.panel__k{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#5a534b;font-variant-numeric:tabular-nums}
+.panel__name{font-family:var(--serif);font-weight:400;font-size:clamp(32px,2.9vw,44px);line-height:1;margin-top:8px;padding-right:36px}
+.panel__price{margin-top:8px;font-size:14px;color:#5a534b}
+.panel__row{display:flex;justify-content:space-between;align-items:baseline;margin-top:20px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#5a534b}
+.panel__row b{color:var(--ink);font-weight:500;letter-spacing:.06em}
+.views{display:flex;gap:10px;margin-top:10px}
+.views button{display:flex;align-items:center;gap:8px;min-height:40px;padding:0 14px 0 6px;border-radius:999px;border:1px solid rgba(27,23,20,.18);font-size:14px;transition:border-color .2s,background .2s}
+.views button i{width:28px;height:28px;border-radius:50%;background-size:cover;background-position:50% 30%;box-shadow:inset 0 0 0 1px rgba(27,23,20,.15)}
+.views button[aria-pressed=true]{border-color:var(--ink);background:#fff8}
+.sz{position:relative;display:grid;grid-template-columns:repeat(6,1fr);margin-top:10px;background:var(--ink);border-radius:999px;padding:4px}
+.sz__thumb{position:absolute;top:4px;bottom:4px;left:0;border-radius:999px;background:var(--crudo);box-shadow:0 2px 8px rgba(0,0,0,.35);transition:transform .45s var(--ease-out),width .45s var(--ease-out)}
+.sz button{position:relative;z-index:1;min-height:40px;border-radius:999px;color:var(--crudo-2);font-size:13px;letter-spacing:.04em;transition:color .3s}
+.sz button[aria-checked=true]{color:var(--ink);font-weight:500}
+.sz button:not([aria-checked=true]):hover{color:#fff}
+.sz button:focus-visible{outline:2px solid var(--crudo);outline-offset:-4px}
+.panel__cta{display:flex;justify-content:space-between;align-items:center;width:100%;min-height:52px;margin-top:16px;padding:0 20px;background:var(--red);color:var(--crudo);border-radius:999px;font-size:15px;font-weight:500;transition:transform .2s var(--ease-out),background .2s}
+.panel__cta:hover{background:#8e0f24}.panel__cta:active{transform:scale(.985)}
+.panel__cta small{font-size:13px;opacity:.85;font-weight:400}
+.panel__note{margin-top:10px;font-size:13px;color:#5a534b;text-align:center}
+.acc{margin-top:16px;border-top:1px solid rgba(27,23,20,.12)}
+.acc details{border-bottom:1px solid rgba(27,23,20,.12)}
+.acc summary{list-style:none;display:flex;justify-content:space-between;align-items:center;min-height:46px;font-size:15px;cursor:pointer}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary::after{content:"";width:12px;height:12px;background:linear-gradient(currentColor,currentColor) 50%/12px 1.5px no-repeat,linear-gradient(currentColor,currentColor) 50%/1.5px 12px no-repeat;transition:transform .3s var(--ease-out)}
+.acc details[open] summary::after{transform:rotate(45deg)}
+.acc p{padding:0 0 14px;font-size:14px;color:#3b352f;line-height:1.55}
+/* mi lista (cajón lateral) */
+.scrim{position:fixed;inset:0;z-index:60;background:rgba(14,13,12,.45);opacity:0;visibility:hidden;transition:opacity .4s,visibility 0s .4s}
+.bag{position:fixed;top:0;right:0;bottom:0;z-index:61;width:min(420px,100vw);background:#141312;color:var(--crudo);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .55s var(--ease-out);box-shadow:-30px 0 60px -20px rgba(0,0,0,.6)}
+body.bag-open .scrim{opacity:1;visibility:visible;transition:opacity .4s}
+body.bag-open .bag{transform:none}
+.bag__head{display:flex;justify-content:space-between;align-items:center;padding:22px 24px;border-bottom:1px solid rgba(237,230,218,.12)}
+.bag__head h2{font-family:var(--serif);font-weight:400;font-size:30px}
+.bag__x{width:40px;height:40px;border-radius:50%;display:grid;place-items:center}.bag__x:hover{background:#262422}.bag__x svg{width:14px;height:14px}
+.bag__body{flex:1;overflow-y:auto;padding:8px 24px 20px}
+.bag__item{display:grid;grid-template-columns:76px 1fr auto;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(237,230,218,.1)}
+.bag__item img{width:76px;height:88px;object-fit:contain;background:#e9e2d6;border-radius:6px;padding:6px}
+.bag__item b{font-family:var(--serif);font-weight:400;font-size:20px;display:block;line-height:1.1}
+.bag__item span{font-size:13px;color:var(--crudo-2)}
+.bag__rm{font-size:13px;color:var(--crudo-2);text-decoration:underline;text-underline-offset:3px;min-height:36px}
+.bag__empty{padding:30px 0;color:var(--crudo-2);font-size:15px}
+.bag__rec{margin-top:22px}
+.bag__rec h3{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--crudo-3);font-weight:400;margin-bottom:10px}
+.bag__recard{display:grid;grid-template-columns:76px 1fr;gap:14px;align-items:center;background:#1e1c1b;border-radius:8px;padding:10px}
+.bag__recard img{width:76px;height:88px;object-fit:contain;background:#e9e2d6;border-radius:6px;padding:6px}
+.bag__recard button{margin-top:8px;min-height:34px;padding:0 12px;border-radius:999px;background:var(--crudo);color:var(--ink);font-size:13px}
+.bag__foot{padding:18px 24px 24px;border-top:1px solid rgba(237,230,218,.12)}
+.bag__foot p{font-size:13px;color:var(--crudo-2);margin-bottom:12px}
+.bag__go{display:flex;justify-content:center;align-items:center;width:100%;min-height:52px;border-radius:999px;background:var(--crudo);color:var(--ink);font-weight:500;font-size:15px;text-decoration:none}
+.nav__bag{display:inline-flex;align-items:center;gap:6px;color:var(--crudo);text-decoration:none;opacity:.88}
+.nav__bag:hover{opacity:1}
+.nav__bag i{font-style:normal;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--crudo);color:var(--ink);font-size:12px;display:grid;place-items:center;font-variant-numeric:tabular-nums;transition:transform .3s var(--ease-out)}
+.nav__bag i.bump{animation:bump .5s var(--ease-out)}
+@keyframes bump{40%{transform:scale(1.3)}}
+.hp__zoom{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 13px;background:#262422;border-radius:4px;color:var(--crudo);font-size:13px;transition:background .2s}
+.hp__zoom:hover{background:#34312e}
+.hp__zoom svg{width:15px;height:15px}
+
+/* ---------- NEGRO SOBRE NEGRO (linterna) ---------- */
+.tonal{padding:clamp(90px,10vw,150px) var(--pad);background:#070706}
+.tonal__head{display:flex;justify-content:space-between;align-items:end;gap:30px;flex-wrap:wrap}
+.tonal__grid{display:grid;grid-template-columns:1.15fr .85fr 1fr;gap:clamp(12px,1.6vw,24px);margin-top:clamp(36px,4vw,60px);align-items:end}
+.tee{position:relative;cursor:zoom-in}
+.tee:nth-child(2){margin-bottom:clamp(40px,6vw,110px)}
+.tee__img{position:relative;aspect-ratio:928/1152;overflow:hidden;border-radius:6px;background:#050505;--x:50%;--y:42%}
+.tee__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tee__dark{filter:brightness(.34) contrast(1.08)}
+.tee__lit{-webkit-mask-image:radial-gradient(circle at var(--x) var(--y),#000 0,rgba(0,0,0,.6) 14%,transparent 34%);mask-image:radial-gradient(circle at var(--x) var(--y),#000 0,rgba(0,0,0,.6) 16%,transparent 38%);filter:brightness(1.3)}
+.tee figcaption{display:flex;justify-content:space-between;margin-top:14px;font-size:14px;color:var(--crudo-2)}
+.tee figcaption b{font-family:var(--serif);font-weight:400;font-size:24px;color:var(--crudo)}
+
+/* ---------- HANNYA ---------- */
+.hannya{padding:clamp(90px,10vw,160px) var(--pad);display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:clamp(30px,6vw,100px)}
+.hannya__lead{position:sticky;top:6vh;align-self:start}
+.hannya__photo{margin-top:36px;aspect-ratio:928/1152;max-height:70svh;border-radius:6px;overflow:hidden;cursor:zoom-in}
+.hannya__photo img{width:100%;height:100%;object-fit:cover}
+.hannya__h{display:flex;align-items:baseline;gap:.35em}
+.hannya__h .kanji{font-size:.7em;color:var(--crudo-2);font-weight:700}
+.hpieces{display:grid;gap:clamp(56px,7vw,110px);padding-top:clamp(0px,8vw,120px)}
+.hp__img{position:relative;aspect-ratio:928/1152;border-radius:6px;overflow:hidden;background:#8d8478;cursor:zoom-in}
+.hp__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .45s var(--ease-out)}
+.hp__img img{opacity:0}
+.hp--plain .hp__img img.is-on{opacity:1}
+.hp__img canvas{position:absolute;inset:0;width:100%;height:100%;cursor:pointer;touch-action:pan-y}
+.hp__meta{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:16px;flex-wrap:wrap}
+.hp__name{font-family:var(--serif);font-size:clamp(26px,2.3vw,34px);line-height:1.05}
+.hp__note{font-size:15px;color:var(--crudo-2);margin-top:6px;max-width:48ch}
+.seg{display:inline-flex;background:#262422;border-radius:4px;padding:3px}
+.seg button{min-height:36px;padding:0 13px;border-radius:3px;font-size:13px;color:var(--crudo-2);transition:background .25s,color .25s}
+.seg button[aria-pressed=true]{background:var(--crudo);color:var(--ink)}
+.seg button:not([aria-pressed=true]):hover{color:var(--crudo)}
+
+/* ---------- EL CÓDIGO (washi: el interior) ---------- */
+.code{background:var(--washi) url(assets/plates/washi.jpg) repeat;background-size:600px;color:var(--sumi);padding:clamp(90px,11vw,170px) var(--pad)}
+.code ::selection{background:var(--sumi);color:var(--washi)}
+.code .lede{color:#5a534b}
+.code__rows{list-style:none;margin-top:clamp(40px,5vw,80px);border-top:1px solid rgba(27,23,20,.25)}
+.code__rows li{display:grid;grid-template-columns:minmax(120px,.5fr) 1fr 1.2fr;gap:clamp(16px,4vw,70px);align-items:center;padding:clamp(18px,2.4vw,34px) 0;border-bottom:1px solid rgba(27,23,20,.25)}
+.code__k{font-family:var(--kanji);font-weight:700;font-size:clamp(84px,11vw,170px);line-height:.9;color:var(--vermilion)}
+.code__rows li:nth-child(2) .code__k{color:var(--sumi)}
+.code__rows li:nth-child(3) .code__k{color:var(--indigo)}
+.code__w{font-family:var(--serif);font-size:clamp(30px,3.2vw,48px);line-height:1}
+.code__w small{display:block;font-family:var(--sans);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#5a534b;margin-top:8px}
+.code__t{font-size:clamp(16px,1.3vw,19px);color:#3b352f;max-width:42ch}
+
+/* ---------- CIERRE ---------- */
+.close{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:100svh}
+.close__photo{position:relative;overflow:hidden;cursor:zoom-in;min-height:60svh}
+.close__photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.close__copy{padding:clamp(60px,8vw,130px) var(--pad);display:flex;flex-direction:column;justify-content:center}
+.close__label{width:min(240px,46%);aspect-ratio:1;border-radius:6px;overflow:hidden;margin-bottom:40px;cursor:zoom-in}
+.close__label img{width:100%;height:100%;object-fit:cover;object-position:50% 62%}
+/* ---------- PIE ---------- */
+.foot{position:relative;background:#0b0a09;color:var(--crudo);padding:clamp(56px,7vw,100px) var(--pad) 0;overflow:hidden;border-top:1px solid rgba(237,230,218,.08)}
+.foot__top{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr));gap:clamp(28px,4vw,64px)}
+.foot__claim{font-family:var(--serif);font-size:clamp(30px,3.2vw,48px);line-height:1.02;max-width:12ch}
+.foot__claim+p{margin-top:14px;font-size:14px;color:var(--crudo-3);max-width:34ch}
+.foot h3{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--crudo-3);font-weight:400;margin-bottom:14px}
+.foot ul{list-style:none;display:grid;gap:9px}
+.foot li a,.foot li button{font-size:15px;color:var(--crudo-2);text-decoration:none;text-align:left;transition:color .2s}
+.foot li a:hover,.foot li button:hover{color:var(--crudo)}
+.foot__mark{display:block;width:100%;height:auto;margin:clamp(56px,8vw,120px) 0 clamp(14px,1.6vw,24px);color:var(--crudo);overflow:visible;pointer-events:none;user-select:none}
+/* the wordmark rises letter by letter when the footer comes into view; the dot lands last */
+.wm__l{transform-box:fill-box;transform-origin:50% 100%;transition:transform 1s var(--ease-out),opacity .8s var(--ease-out);transition-delay:calc(var(--i)*90ms)}
+.wm__dot{transform-box:fill-box;transform-origin:50% 50%;transition:transform .7s cubic-bezier(.34,1.56,.64,1) .65s,opacity .3s .65s}
+.foot.is-pre .wm__l{transform:translateY(38%);opacity:0}
+.foot.is-pre .wm__dot{transform:scale(0);opacity:0}
+.foot__bar{position:relative;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 0 22px;border-top:1px solid rgba(237,230,218,.1);font-size:13px;color:var(--crudo-3);background:#0b0a09}
+
+/* ---------- LIGHTBOX ---------- */
+dialog.lb{border:0;padding:0;background:transparent;max-width:none;max-height:none;width:100vw;height:100svh;color:var(--crudo)}
+dialog.lb::backdrop{background:rgba(7,7,6,.94)}
+.lb__img{width:100%;height:100%;object-fit:contain;padding:clamp(16px,4vw,56px)}
+.lb__x{position:fixed;top:16px;right:16px;width:46px;height:46px;border-radius:50%;background:rgba(237,230,218,.12);display:grid;place-items:center}
+.lb__x svg{width:18px;height:18px}
+dialog.lb[open] .lb__img{animation:lbin .35s var(--ease-out)}
+@keyframes lbin{from{opacity:0;transform:scale(.97)}}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:860px){
+  body{font-size:16px}
+  .nav__links li:not(.keep),.nav__links li.keep-lg{display:none}
+  .nav__links{gap:18px;white-space:nowrap}
+  .hero{min-height:640px;max-height:none}
+  .hero__copy{left:var(--pad);right:var(--pad);top:96px;max-width:none}
+  .hero h1{font-size:clamp(2.9rem,13vw,4.4rem)}
+  .join{max-width:none}
+  .hero__jacket-slot{left:6%;top:auto;bottom:calc(76px + 3%);width:52%;height:34%}
+  .hero__toggle{bottom:calc(76px + 14px)}
+  .band{height:60px}
+  .zip{height:165vh}
+  .zip__stage{grid-template-columns:1fr;align-content:center;gap:22px;padding-top:24px}
+  .zip__frame{height:52svh;order:-1}
+  .zip__steps{margin-top:18px;gap:10px}
+  .zip__steps li{font-size:15px}
+  .zip__copy .lede{display:none}
+  .rack__stage{height:auto;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 calc(var(--pad)*-1);padding:0 var(--pad)}
+  .rack__stage::-webkit-scrollbar{display:none}
+  .rack__items{position:relative;display:flex;align-items:flex-start;width:max-content;padding:12px 8px 24px;perspective:none}
+  .rack__rail{display:none}
+  .rack__items::before{content:"";position:absolute;left:0;right:0;top:34px;height:7px;border-radius:4px;background:#1f1b18;box-shadow:0 10px 16px -8px rgba(27,23,20,.45)}
+  .hang{--w:46vw;position:relative;top:0;margin:0 6px;scroll-snap-align:center;transform:none!important}
+  .hang__body{transform:none}
+  .rack__items.has-hot .hang:not(.is-hot) .hang__body{opacity:1}
+  .hang.is-hot .hang__body{animation:none}
+  .fit{position:fixed;inset:0;z-index:40;background:var(--crudo);grid-template-columns:1fr;align-content:start;overflow-y:auto;padding:12px var(--pad) 28px;gap:6px}
+  .fit__stage{grid-template-columns:auto 1fr auto;gap:4px}
+  .fit__fig{height:auto;width:100%;max-width:min(100%,calc(50svh*.86));aspect-ratio:.86}
+  .fit__nav{width:40px;height:40px}
+  .fit__tags{right:0}
+  .panel{max-height:none;overflow:visible;background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;border:0;box-shadow:none;padding:6px 0 0}
+  .panel__x{position:fixed;top:12px;right:12px;z-index:5;background:rgba(237,230,218,.92);box-shadow:0 2px 10px rgba(27,23,20,.2)}
+  .rack.is-open .rack__wrap{min-height:0}
+  .rack.is-open .rack__stage{filter:none;opacity:1}
+  .tonal__grid{grid-template-columns:1fr 1fr}
+  .tee:nth-child(1){grid-column:1/3}
+  .tee:nth-child(2){margin-bottom:0}
+  .hannya{grid-template-columns:1fr}
+  .hannya__lead{position:static}
+  .code__rows li{grid-template-columns:auto 1fr;}
+  .code__t{grid-column:1/3}
+  .close{grid-template-columns:minmax(0,1fr)}
+  .foot__top{grid-template-columns:1fr 1fr}
+  .foot__top>div:first-child{grid-column:1/3}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .band__track{animation-duration:140s}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <a class="nav__mark" href="#top" aria-label="URAONI, inicio"><img src="assets/img/wordmark.png" alt="URAONI" width="1419" height="339"></a>
+  <nav aria-label="Principal">
+    <ul class="nav__links">
+      <li class="keep"><a href="#drop">Drop 01</a></li>
+      <li><a href="#hannya">Hannya</a></li>
+      <li><a href="#codigo">El código</a></li>
+      <li class="keep keep-lg"><a class="is-cta" href="#lista">Lista de espera</a></li>
+      <li class="keep"><a class="nav__bag" href="#mi-lista" id="bagOpen" aria-label="Mi lista, 0 prendas">Mi lista <i id="bagCount">0</i></a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="top">
+<section class="hero" aria-labelledby="hero-h">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="hero__jacket-slot" id="jacketSlot"></div>
+  <div class="hero__copy">
+    <h1 id="hero-h"><span>Calma por fuera.</span><span>Oni por dentro.</span></h1>
+    <p class="hero__sub">Drop 01 · 9 prendas · cada una esconde un deporte.</p>
+    <form class="join" novalidate data-join>
+      <label class="sr-only" for="email1">Tu correo electrónico</label>
+      <input id="email1" type="email" name="email" autocomplete="email" inputmode="email" placeholder="Tu correo electrónico" required>
+      <button type="submit">Unirme a la lista</button>
+    </form>
+    <p class="join__msg" aria-live="polite"></p>
+    <p class="done" role="status"><strong>Aún no guardamos correos.</strong>La lista abre con la tienda. El aviso del lanzamiento sale primero en <a href="https://instagram.com/uraoni.official">@uraoni.official</a>.</p>
+  </div>
+  <div class="hero__pull" id="heroPull" role="button" tabindex="0" aria-label="Levantar la tela y ver el Oni de dentro"></div>
+  <span class="hero__hint" id="heroHint">Tira de la tela<svg viewBox="0 0 40 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M1 12c10 2 22 0 34-8"/><path d="M29 3.5 35 4l-2.6 5.4"/></svg></span>
+  <button class="hero__toggle" id="heroToggle" type="button" aria-pressed="false">Ver el Oni</button>
+  <div class="band" aria-hidden="true">
+    <div class="band__track">
+      <span>Chaqueta Mataleón <em>BJJ</em></span><span>Media cremallera Kuro <em>BJJ</em></span><span>Bomber Sumi <em>Boxeo</em></span><span>Sobrecamisa Índigo <em>Fuerza</em></span><span>Capucha Shiro <em>BJJ</em></span><span class="k">裏鬼</span><span>Calma por fuera</span><span>Oni por dentro</span><span>Línea Hannya</span>
+      <span>Chaqueta Mataleón <em>BJJ</em></span><span>Media cremallera Kuro <em>BJJ</em></span><span>Bomber Sumi <em>Boxeo</em></span><span>Sobrecamisa Índigo <em>Fuerza</em></span><span>Capucha Shiro <em>BJJ</em></span><span class="k">裏鬼</span><span>Calma por fuera</span><span>Oni por dentro</span><span>Línea Hannya</span>
+    </div>
+  </div>
+</section>
+
+<section class="zip" id="abre" aria-labelledby="zip-h">
+  <div class="zip__stage">
+    <div class="zip__copy">
+      <h2 class="h2" id="zip-h">Abre la prenda.</h2>
+      <p class="lede">Por fuera, felpa antracita lisa y un monograma de 3 cm. Baja la cremallera y aparece el forro completo.</p>
+      <ol class="zip__steps">
+        <li data-at="0"><b>1</b><span>Cerrada: sobria para cenar, para trabajar, para la calle.</span></li>
+        <li data-at=".35"><b>2</b><span>Se abre: el filo rojo del forro asoma en el cuello.</span></li>
+        <li data-at=".7"><b>3</b><span>Abierta: el Oni haciendo un mataleón a un ladrón.</span></li>
+      </ol>
+    </div>
+    <figure class="zip__frame" id="zipFrame" data-lb="assets/img/jacket-open.webp" data-lb-alt="Chaqueta Mataleón abierta, con el forro del Oni">
+      <img src="assets/img/jacket-open.webp" alt="Chaqueta Mataleón abierta: forro rojo y crudo con el Oni haciendo un mataleón" width="928" height="1152" loading="lazy">
+      <img class="zip__closed" id="zipClosed" src="assets/img/jacket-closed.webp" alt="" width="928" height="1152" loading="lazy">
+      <img class="zip__pull" id="zipPull" src="assets/plates/zip-pull.png" alt="" width="112" height="232">
+    </figure>
+  </div>
+</section>
+
+<section class="rack" id="drop" aria-labelledby="drop-h">
+  <div class="rack__head">
+    <div>
+      <h2 class="h2" id="drop-h">Drop 01</h2>
+      <p class="lede">Seis prendas unisex, XS–XXL, con puños y bajos ajustables. Cada una esconde un deporte por dentro. Pasa por las perchas y elige una.</p>
+    </div>
+    <span class="rack__count">6 prendas · tirada corta</span>
+  </div>
+  <div class="rack__wrap">
+    <div class="rack__stage" id="rackStage">
+      <div class="rack__rail" aria-hidden="true"></div>
+      <div class="rack__items" id="rackItems"></div>
+    </div>
+    <p class="rack__cap" id="rackCap" aria-live="polite"><b>Elige una prenda</b><span>6 perchas</span></p>
+    <div class="fit" id="fit" role="dialog" aria-modal="false" aria-labelledby="fitName" hidden>
+      <div class="fit__stage">
+        <button class="fit__nav" type="button" id="fitPrev" aria-label="Prenda anterior"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3 5 8l5 5"/></svg></button>
+        <div class="fit__fig">
+          <div class="fit__box">
+            <img class="fit__out" id="fitOut" alt="" src="assets/rack/jacket.webp">
+            <img class="fit__in" id="fitIn" alt="" src="assets/rack/jacket-open.webp">
+            <div class="fit__tags" role="group" aria-label="Vista">
+              <button class="tag tag--out" type="button" data-v="out" aria-pressed="true">Fuera</button>
+              <button class="tag tag--in" type="button" data-v="in" aria-pressed="false">Dentro</button>
+            </div>
+            <button class="fit__zoom" type="button" id="fitZoom" aria-label="Ampliar foto"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9.5 2H14v4.5M6.5 14H2V9.5M14 2 9 7M2 14l5-5"/></svg></button>
+          </div>
+        </div>
+        <button class="fit__nav" type="button" id="fitNext" aria-label="Prenda siguiente"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 3 5 5-5 5"/></svg></button>
+        <div class="fit__dots" id="fitDots" role="group" aria-label="Prendas"></div>
+      </div>
+      <aside class="panel" aria-label="Ficha de la prenda">
+        <button class="panel__x" type="button" id="fitX" aria-label="Cerrar ficha"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3l10 10M13 3 3 13"/></svg></button>
+        <span class="panel__k" id="fitNo">Drop 01 · 01 / 06 · BJJ</span>
+        <h3 class="panel__name" id="fitName">Chaqueta Mataleón</h3>
+        <p class="panel__price">Precio al abrir el drop · unisex</p>
+        <div class="panel__row"><span>Vista</span><b id="fitViewLbl">Por fuera</b></div>
+        <div class="views" role="group" aria-label="Vista">
+          <button type="button" data-v="out" aria-pressed="true"><i id="swOut"></i>Por fuera</button>
+          <button type="button" data-v="in" aria-pressed="false"><i id="swIn"></i>Por dentro</button>
+        </div>
+        <div class="panel__row"><span>Talla <b id="fitSizeLbl">M</b></span><span>Unisex · ajustable</span></div>
+        <div class="sz" id="fitSizes" role="radiogroup" aria-label="Talla">
+          <span class="sz__thumb" aria-hidden="true"></span>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1">XS</button><button type="button" role="radio" aria-checked="false" tabindex="-1">S</button><button type="button" role="radio" aria-checked="true" tabindex="0">M</button><button type="button" role="radio" aria-checked="false" tabindex="-1">L</button><button type="button" role="radio" aria-checked="false" tabindex="-1">XL</button><button type="button" role="radio" aria-checked="false" tabindex="-1">XXL</button>
+        </div>
+        <button class="panel__cta" type="button" id="fitAdd"><span id="fitAddLbl">Guardar en mi lista · M</span><small>Drop 01</small></button>
+        <p class="panel__note">Sin pago ni compromiso: te avisamos cuando abra.</p>
+        <div class="acc" id="fitAcc">
+          <details open><summary>Lo que esconde</summary><p id="accIn"></p></details>
+          <details><summary>Tejido y cuidado</summary><p id="accFab"></p></details>
+          <details><summary>Talla y corte</summary><p>Unisex, de XS a XXL, con puños y bajos ajustables. La guía de medidas se publica con la apertura del drop.</p></details>
+          <details><summary>Envíos y devoluciones</summary><p>Se anuncian al abrir el Drop 01. Primero lo sabrá la lista de espera.</p></details>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="tonal" aria-labelledby="tonal-h">
+  <div class="tonal__head">
+    <div>
+      <h2 class="h2" id="tonal-h">Negro sobre negro.</h2>
+      <p class="lede">Tres camisetas con la ilustración en relieve negro en la espalda. Solo se ve cuando le da la luz: pasa el dedo o el ratón por encima.</p>
+    </div>
+  </div>
+  <div class="tonal__grid">
+    <figure class="tee" data-lb="assets/img/tonal-mataleon.webp" data-lb-alt="Camiseta Mataleón, espalda en relieve negro">
+      <div class="tee__img"><img class="tee__dark" src="assets/img/tonal-mataleon.webp" alt="Camiseta negra Mataleón vista de espalda, relieve negro" loading="lazy"><img class="tee__lit" src="assets/img/tonal-mataleon.webp" alt="" loading="lazy"></div>
+      <figcaption><b>Mataleón</b><span>BJJ</span></figcaption>
+    </figure>
+    <figure class="tee" data-lb="assets/img/tonal-guardia.webp" data-lb-alt="Camiseta Guardia, espalda en relieve negro">
+      <div class="tee__img"><img class="tee__dark" src="assets/img/tonal-guardia.webp" alt="Camiseta negra Guardia vista de espalda, relieve negro" loading="lazy"><img class="tee__lit" src="assets/img/tonal-guardia.webp" alt="" loading="lazy"></div>
+      <figcaption><b>Guardia</b><span>Boxeo</span></figcaption>
+    </figure>
+    <figure class="tee" data-lb="assets/img/tonal-dojo.webp" data-lb-alt="Camiseta Dojo, espalda en relieve negro">
+      <div class="tee__img"><img class="tee__dark" src="assets/img/tonal-dojo.webp" alt="Camiseta negra Dojo vista de espalda, relieve negro" loading="lazy"><img class="tee__lit" src="assets/img/tonal-dojo.webp" alt="" loading="lazy"></div>
+      <figcaption><b>Dojo</b><span>Karate</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="hannya" id="hannya" aria-labelledby="hannya-h">
+  <div class="hannya__lead">
+    <h2 class="h2 hannya__h" id="hannya-h">Hannya <span class="kanji" lang="ja">般若</span></h2>
+    <p class="lede">La línea de chica: tres prendas con patrón femenino, XS–XL. Corte corto, hombro caído, el mismo Oni por dentro. Pasa el ratón o toca las capuchas para ver su forro.</p>
+    <div class="hannya__photo" data-lb="assets/img/w-campaign.webp" data-lb-alt="Campaña Hannya"><img src="assets/img/w-campaign.webp" alt="Mujer con la capucha corta Hannya negra, forro de olas rojas en la capucha" loading="lazy"></div>
+  </div>
+  <div class="hpieces">
+    <article class="hp" data-hp>
+      <div class="hp__img">
+        <img class="is-on" data-v="Negro" src="assets/img/w-crop-black.webp" alt="Capucha corta Hannya en negro" loading="lazy">
+        <img data-v="Crudo" src="assets/img/w-crop-crudo.webp" alt="Capucha corta Hannya en crudo" loading="lazy">
+      </div>
+      <div class="hp__meta">
+        <h3 class="hp__name">Capucha corta</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><div class="seg" role="group" aria-label="Color"><button type="button" aria-pressed="true">Negro</button><button type="button" aria-pressed="false">Crudo</button></div><button class="hp__zoom" type="button" aria-label="Ampliar foto"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9.5 2H14v4.5M6.5 14H2V9.5M14 2 9 7M2 14l5-5"/></svg></button></div>
+      </div>
+      <p class="hp__note">Sin cremallera ni botones. Forro de la capucha con olas y nubes rojas.</p>
+    </article>
+    <article class="hp" data-hp>
+      <div class="hp__img">
+        <img class="is-on" data-v="Negro" src="assets/img/w-snap-black.webp" alt="Capucha Hannya con botones a presión en negro" loading="lazy">
+        <img data-v="Crudo" src="assets/img/w-snap-crudo.webp" alt="Capucha Hannya con botones a presión en crudo" loading="lazy">
+      </div>
+      <div class="hp__meta">
+        <h3 class="hp__name">Capucha con botones</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><div class="seg" role="group" aria-label="Color"><button type="button" aria-pressed="true">Negro</button><button type="button" aria-pressed="false">Crudo</button></div><button class="hp__zoom" type="button" aria-label="Ampliar foto"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9.5 2H14v4.5M6.5 14H2V9.5M14 2 9 7M2 14l5-5"/></svg></button></div>
+      </div>
+      <p class="hp__note">Tapeta con botones a presión y el mismo forro de olas en la capucha.</p>
+    </article>
+    <article class="hp hp--plain" data-hp>
+      <div class="hp__img">
+        <img class="is-on" data-v="Delante" src="assets/img/w-tee.webp" alt="Camiseta de cuello alto Hannya, delante" loading="lazy">
+        <img data-v="Espalda 般若" src="assets/img/w-tee-kanji.webp" alt="Camiseta de cuello alto Hannya, espalda con el kanji 般若 en rojo" loading="lazy">
+        <img data-v="Espalda relieve" src="assets/img/w-tee-relief.webp" alt="Camiseta de cuello alto Hannya, espalda con relieve negro" loading="lazy">
+      </div>
+      <div class="hp__meta">
+        <h3 class="hp__name">Camiseta cuello alto</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><div class="seg" role="group" aria-label="Vista"><button type="button" aria-pressed="true">Delante</button><button type="button" aria-pressed="false">Espalda <span class="kanji" lang="ja">般若</span></button><button type="button" aria-pressed="false">Relieve</button></div><button class="hp__zoom" type="button" aria-label="Ampliar foto"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9.5 2H14v4.5M6.5 14H2V9.5M14 2 9 7M2 14l5-5"/></svg></button></div>
+      </div>
+      <p class="hp__note">Punto fino con elasticidad y cinta roja en el cuello. Dos espaldas a elegir: el kanji 般若 en rojo o el relieve negro.</p>
+    </article>
+  </div>
+</section>
+
+<section class="code" id="codigo" aria-labelledby="code-h">
+  <h2 class="h2" id="code-h">El código.</h2>
+  <p class="lede">Lo que va dentro de cada prenda. Tres palabras que se aprenden en el tatami.</p>
+  <ol class="code__rows">
+    <li><span class="code__k" lang="ja">守</span><span class="code__w">Proteger<small>Mamoru</small></span><p class="code__t">La técnica sirve para cuidar a los tuyos, no para buscar pelea.</p></li>
+    <li><span class="code__k" lang="ja">律</span><span class="code__w">Disciplina<small>Ritsu</small></span><p class="code__t">Volver al tatami cuando no apetece. Ahí se gana todo lo demás.</p></li>
+    <li><span class="code__k" lang="ja">裏</span><span class="code__w">Lo de dentro<small>Ura</small></span><p class="code__t">Lo que eres no hace falta enseñarlo. Por fuera, calma.</p></li>
+  </ol>
+</section>
+
+<section class="close" id="lista" aria-labelledby="close-h">
+  <div class="close__photo" data-lb="assets/img/campaign.webp" data-lb-alt="Hombre abriendo la Chaqueta Mataleón en la calle"><img src="assets/img/campaign.webp" alt="Hombre en la calle abriendo la Chaqueta Mataleón y enseñando el forro del Oni" loading="lazy"></div>
+  <div class="close__copy">
+    <div class="close__label" data-lb="assets/img/label.webp" data-lb-alt="Etiqueta roja tejida URAONI 裏鬼"><img src="assets/img/label.webp" alt="Etiqueta roja tejida con URAONI y 裏鬼 en el costado de la prenda" loading="lazy"></div>
+    <h2 class="h2" id="close-h">Hecha para el tatami.<br>Cortada para la calle.</h2>
+    <p class="lede">Tirada corta del Drop 01. Apúntate y te avisamos antes de que abra.</p>
+    <form class="join" novalidate data-join>
+      <label class="sr-only" for="email2">Tu correo electrónico</label>
+      <input id="email2" type="email" name="email" autocomplete="email" inputmode="email" placeholder="Tu correo electrónico" required>
+      <button type="submit">Unirme a la lista</button>
+    </form>
+    <p class="join__msg" aria-live="polite"></p>
+    <p class="done" role="status"><strong>Aún no guardamos correos.</strong>La lista abre con la tienda. El aviso del lanzamiento sale primero en <a href="https://instagram.com/uraoni.official">@uraoni.official</a>.</p>
+  </div>
+</section>
+</main>
+
+<footer class="foot" aria-labelledby="foot-h">
+  <h2 class="sr-only" id="foot-h">URAONI</h2>
+  <div class="foot__top">
+    <div><p class="foot__claim">Calma por fuera. Oni por dentro.</p><p>Ropa de vestir para gente que entrena. Drop 01, tirada corta.</p></div>
+    <nav aria-label="Drop 01"><h3>Drop 01</h3><ul id="footPieces"></ul></nav>
+    <nav aria-label="Marca"><h3>Marca</h3><ul><li><a href="#abre">Abre la prenda</a></li><li><a href="#hannya">Línea Hannya</a></li><li><a href="#codigo">El código</a></li><li><a href="#lista">Lista de espera</a></li></ul></nav>
+    <nav aria-label="Síguenos"><h3>Síguenos</h3><ul><li><a href="https://instagram.com/uraoni.official">Instagram · @uraoni.official</a></li><li><a href="https://www.tiktok.com/@uraoni.official">TikTok · @uraoni.official</a></li><li><a href="#top">uraoni.es</a></li></ul></nav>
+  </div>
+  <svg class="foot__mark" viewBox="368 417 4258 1014" role="img" aria-label="URAONI" fill="currentColor" fill-rule="evenodd"><g class="wm__l" style="--i:0"><path d="M780.5,1423.9C787.0,1423.4 796.0,1422.2 800.5,1421.4C804.9,1420.6 818.9,1418.4 831.5,1416.6C855.1,1413.1 856.4,1412.8 865.3,1408.5C868.2,1407.2 875.1,1404.9 880.5,1403.5C887.3,1401.7 892.1,1399.8 895.6,1397.5C898.4,1395.6 903.9,1392.9 907.9,1391.5C912.0,1390.1 917.2,1387.5 919.6,1385.5C922.0,1383.5 926.0,1381.0 928.6,1379.9C931.1,1378.7 934.8,1376.4 936.8,1374.6C938.9,1372.8 943.2,1369.5 946.6,1367.2C954.2,1362.1 978.2,1338.2 982.6,1331.3C984.5,1328.5 987.8,1324.0 990.1,1321.4C992.4,1318.7 995.0,1315.0 995.8,1313.0C996.6,1311.1 998.8,1307.4 1000.7,1304.7C1002.6,1302.1 1005.7,1296.4 1007.5,1291.9C1009.4,1287.5 1012.3,1281.7 1013.9,1279.1C1015.8,1276.2 1017.9,1270.5 1019.5,1264.3C1020.8,1258.8 1023.3,1250.9 1025.0,1246.7C1029.1,1236.4 1029.5,1233.9 1033.6,1197.5L1037.2,1165.5L1038.0,1104.0C1038.5,1070.2 1038.9,992.8 1038.9,932.0C1039.1,813.5 1039.8,783.2 1042.9,765.3C1045.0,753.5 1045.7,751.6 1050.0,746.0C1051.5,744.1 1053.7,740.6 1054.9,738.2C1056.4,735.3 1058.8,732.8 1062.3,730.6C1065.2,728.7 1068.6,726.1 1069.8,724.7C1072.9,721.4 1075.1,720.6 1089.5,717.4C1103.1,714.4 1121.4,707.9 1124.7,704.8C1129.9,699.9 1130.1,690.9 1125.0,686.6L1122.0,684.1L1012.8,684.6L903.5,685.1L901.3,687.5C898.2,691.1 897.4,696.4 899.4,700.6C901.7,705.5 906.3,708.0 913.0,708.0C920.6,708.0 930.8,710.4 936.8,713.4C939.6,714.8 945.4,716.9 949.7,718.1C959.8,720.8 963.9,723.3 972.8,732.0C980.1,739.2 983.2,743.9 984.4,749.5C986.6,760.2 989.2,785.9 990.0,805.5C991.1,832.6 991.6,1109.0 990.6,1136.0C989.2,1173.2 984.3,1218.6 980.6,1228.3C975.2,1242.4 974.0,1245.8 972.5,1251.1C971.7,1254.1 969.4,1259.1 967.4,1262.1C965.4,1265.1 962.6,1270.2 961.0,1273.5C959.5,1276.8 957.2,1280.4 956.0,1281.5C954.7,1282.6 951.8,1286.4 949.5,1290.0C944.8,1297.2 925.8,1317.0 918.9,1321.7C916.5,1323.4 913.4,1326.0 912.0,1327.5C910.6,1329.0 907.1,1331.4 904.1,1332.7C901.1,1334.0 896.2,1336.9 893.2,1339.0C889.8,1341.5 884.5,1343.9 879.1,1345.6C874.4,1347.0 868.5,1349.3 866.0,1350.6C858.7,1354.4 856.5,1355.0 838.1,1357.6C828.4,1359.0 818.9,1360.6 817.0,1361.1C812.0,1362.6 777.2,1363.4 766.5,1362.2C731.3,1358.3 713.9,1355.0 703.2,1350.2C698.4,1348.0 691.8,1345.4 688.5,1344.5C685.1,1343.5 680.3,1341.2 677.5,1339.0C674.8,1336.9 670.0,1334.0 667.0,1332.5C664.0,1331.0 660.4,1328.6 659.0,1327.1C657.6,1325.6 654.9,1323.3 653.0,1322.0C646.0,1317.2 625.5,1294.8 622.2,1288.4C621.1,1286.2 618.6,1282.5 616.7,1280.2C614.8,1278.0 612.1,1273.2 610.6,1269.5C609.2,1265.9 606.4,1260.7 604.6,1257.9C602.2,1254.5 600.6,1250.5 599.5,1245.2C598.6,1241.0 596.3,1232.5 594.4,1226.5C586.3,1200.5 585.7,1186.1 585.3,1001.0C584.8,807.9 585.9,762.8 591.4,752.0C592.6,749.5 595.1,744.7 596.9,741.2C598.8,737.7 601.8,733.7 603.8,732.2C605.7,730.7 609.4,727.6 612.0,725.2C615.2,722.3 619.2,720.1 624.6,718.1C629.0,716.6 634.5,714.2 637.0,712.9C641.1,710.7 642.7,710.5 654.2,710.5C668.8,710.5 670.7,709.7 674.9,701.7C679.4,692.9 675.1,685.7 664.8,684.6C661.9,684.3 598.1,684.1 523.0,684.3C373.9,684.5 381.5,684.2 376.4,690.3C373.8,693.4 373.1,699.5 375.0,703.0C376.4,705.6 383.0,707.7 394.0,709.0C400.7,709.8 405.7,711.1 411.0,713.5C415.1,715.3 421.8,717.7 425.8,718.9C432.5,720.9 434.1,721.9 443.0,730.0C449.3,735.8 453.6,740.5 455.0,743.4C458.2,750.1 462.8,768.1 464.0,778.6C465.3,790.5 465.3,1107.9 464.0,1130.3C463.3,1142.5 463.4,1149.0 464.5,1158.3C465.3,1165.0 466.6,1179.5 467.5,1190.5C470.0,1221.4 471.4,1230.3 475.4,1241.0C477.3,1246.2 479.8,1254.8 481.0,1260.0C482.4,1266.3 484.4,1271.5 486.6,1275.2C488.5,1278.4 491.3,1284.7 492.9,1289.3C494.4,1294.0 497.1,1299.5 498.8,1301.6C500.5,1303.8 503.1,1308.1 504.4,1311.3C505.8,1314.4 508.7,1318.9 510.8,1321.3C512.9,1323.6 515.8,1327.3 517.2,1329.5C520.9,1335.1 536.4,1350.9 543.0,1355.7C546.0,1357.9 549.6,1361.0 551.0,1362.5C552.4,1364.0 555.3,1366.1 557.5,1367.2C559.7,1368.4 563.5,1371.0 565.9,1373.1C568.3,1375.3 572.9,1378.0 576.1,1379.1C579.4,1380.3 584.3,1383.0 587.1,1385.1C590.2,1387.4 595.5,1390.0 600.4,1391.5C604.9,1392.9 609.6,1394.9 611.0,1395.9C615.8,1399.3 620.0,1401.0 628.6,1403.1C633.4,1404.2 641.2,1406.9 645.9,1409.0C652.0,1411.7 657.5,1413.3 665.0,1414.5C675.2,1416.1 687.2,1418.3 701.5,1421.4C705.4,1422.2 712.1,1423.3 716.5,1423.8C727.8,1425.1 766.3,1425.2 780.5,1423.9Z"/></g><g class="wm__l" style="--i:1"><path d="M1485.5,1403.9C1491.9,1398.2 1492.3,1388.5 1486.2,1382.7C1483.5,1380.1 1482.6,1379.9 1468.4,1378.9C1459.2,1378.2 1451.6,1377.1 1448.5,1376.0C1425.0,1367.6 1424.9,1367.6 1417.7,1359.8C1409.2,1350.6 1405.4,1345.0 1403.4,1338.5C1400.7,1329.6 1400.1,1301.8 1400.0,1187.8C1399.9,1063.1 1399.4,1071.4 1406.8,1068.3C1410.0,1067.0 1414.5,1066.8 1439.5,1067.4C1460.7,1068.0 1469.0,1068.5 1470.5,1069.5C1471.6,1070.2 1475.9,1074.1 1480.0,1078.2C1485.1,1083.3 1488.0,1087.0 1488.9,1089.8C1489.7,1092.0 1492.1,1096.0 1494.2,1098.7C1496.4,1101.3 1499.5,1106.0 1501.0,1109.0C1502.6,1112.0 1505.2,1116.0 1507.0,1117.8C1508.7,1119.7 1511.2,1123.4 1512.6,1126.2C1514.0,1128.9 1516.8,1133.1 1518.9,1135.3C1521.0,1137.6 1523.9,1141.6 1525.3,1144.1C1526.8,1146.6 1529.3,1149.9 1531.0,1151.3C1532.6,1152.8 1535.2,1155.9 1536.6,1158.2C1538.1,1160.6 1540.7,1163.8 1542.5,1165.5C1544.4,1167.2 1547.1,1170.9 1548.6,1173.8C1550.2,1176.7 1553.2,1181.2 1555.3,1183.7C1557.4,1186.3 1560.1,1190.3 1561.2,1192.5C1562.3,1194.7 1565.0,1198.3 1567.0,1200.6C1569.1,1202.9 1571.7,1206.9 1572.9,1209.6C1574.1,1212.2 1576.8,1216.7 1578.9,1219.4C1581.0,1222.2 1583.9,1226.8 1585.3,1229.5C1586.7,1232.2 1589.2,1235.8 1591.0,1237.5C1592.8,1239.2 1595.3,1242.8 1596.7,1245.5C1598.1,1248.2 1600.8,1252.2 1602.6,1254.2C1604.4,1256.2 1606.8,1259.7 1608.0,1261.9C1609.1,1264.1 1612.0,1268.2 1614.5,1271.0C1617.0,1273.8 1619.9,1278.0 1621.1,1280.3C1622.3,1282.6 1624.8,1286.2 1626.6,1288.2C1628.4,1290.3 1631.0,1294.1 1632.4,1296.8C1633.7,1299.4 1636.8,1303.8 1639.3,1306.5C1641.7,1309.3 1644.5,1313.0 1645.4,1314.9C1646.4,1316.7 1648.9,1320.1 1651.0,1322.4C1653.0,1324.6 1655.4,1327.9 1656.3,1329.6C1657.2,1331.3 1659.8,1335.1 1662.2,1338.1C1664.6,1341.1 1667.7,1345.3 1669.0,1347.5C1670.3,1349.7 1673.3,1353.6 1675.6,1356.1C1677.9,1358.6 1680.5,1362.0 1681.3,1363.6C1682.1,1365.2 1684.0,1367.6 1685.5,1369.0C1687.0,1370.4 1690.2,1374.5 1692.6,1378.1C1694.9,1381.8 1697.4,1385.1 1698.0,1385.5C1698.6,1385.9 1701.6,1389.6 1704.7,1393.7C1713.9,1406.2 1688.8,1404.8 1913.0,1405.1C2088.6,1405.3 2107.9,1405.2 2111.2,1403.8C2118.9,1400.4 2119.7,1394.5 2113.5,1387.3C2109.6,1382.7 2107.3,1381.6 2097.1,1379.5C2093.0,1378.7 2086.9,1376.7 2083.4,1375.1C2080.0,1373.5 2074.6,1371.4 2071.4,1370.5C2062.7,1368.0 2057.6,1364.6 2053.1,1358.4C2044.9,1347.0 2044.5,1341.5 2049.9,1316.1C2052.3,1304.5 2054.1,1298.7 2057.0,1292.9C2059.2,1288.7 2061.8,1281.5 2063.0,1276.9C2064.2,1272.3 2066.7,1265.9 2068.5,1262.7C2070.4,1259.5 2073.1,1253.0 2074.5,1248.2C2075.9,1243.4 2078.8,1236.1 2081.0,1231.9C2083.1,1227.8 2085.8,1220.8 2087.0,1216.4C2088.2,1212.1 2090.9,1205.3 2093.0,1201.5C2095.1,1197.7 2097.6,1191.3 2098.6,1187.5C2100.8,1178.4 2103.0,1174.9 2109.3,1170.3L2114.4,1166.5L2238.5,1165.7C2376.4,1164.9 2368.3,1164.6 2373.6,1171.6C2375.0,1173.4 2377.0,1177.7 2378.1,1181.1C2379.1,1184.4 2381.5,1189.9 2383.4,1193.3C2385.3,1196.7 2387.7,1203.2 2388.9,1207.8C2390.0,1212.4 2392.8,1219.5 2395.0,1223.6C2397.3,1227.6 2400.0,1234.2 2401.1,1238.2C2402.2,1242.2 2404.8,1248.4 2407.0,1252.0C2409.1,1255.6 2411.8,1262.0 2412.9,1266.3C2414.1,1270.7 2416.8,1277.1 2418.9,1280.6C2421.1,1284.2 2423.8,1290.3 2425.0,1294.3C2426.2,1298.3 2428.9,1304.3 2431.1,1307.7C2437.5,1317.6 2440.5,1335.6 2437.9,1348.2C2435.5,1359.4 2429.0,1367.1 2414.6,1375.9C2409.2,1379.1 2408.6,1379.3 2394.7,1380.0C2378.5,1380.9 2374.0,1382.3 2370.3,1387.9C2366.1,1394.1 2367.8,1399.3 2375.3,1403.2L2379.5,1405.3L2513.9,1405.2L2648.4,1405.0L2651.2,1402.3C2654.8,1398.8 2655.6,1394.5 2653.5,1389.2C2651.1,1383.4 2647.6,1381.2 2637.5,1379.5C2632.2,1378.5 2626.3,1376.7 2622.2,1374.6C2618.5,1372.8 2612.3,1370.3 2608.4,1369.2C2602.0,1367.2 2600.2,1366.1 2591.1,1357.9C2585.6,1352.8 2581.0,1348.4 2581.0,1348.0C2581.0,1347.6 2578.4,1343.8 2575.1,1339.7C2571.9,1335.5 2568.2,1329.5 2567.0,1326.3C2565.7,1323.1 2563.1,1318.4 2561.3,1315.8C2559.4,1313.2 2556.8,1307.7 2555.4,1303.6C2554.0,1299.4 2550.9,1292.6 2548.5,1288.4C2546.1,1284.2 2543.9,1279.2 2543.5,1277.1C2543.2,1275.1 2541.5,1270.8 2539.8,1267.5C2533.1,1254.3 2532.2,1252.3 2530.5,1246.0C2529.6,1242.4 2527.1,1236.3 2525.0,1232.5C2522.9,1228.7 2520.3,1221.9 2519.2,1217.4C2518.1,1213.0 2515.2,1205.4 2512.7,1200.4C2510.3,1195.5 2507.5,1188.6 2506.5,1185.0C2505.6,1181.4 2503.1,1175.6 2501.0,1172.0C2498.8,1168.4 2496.3,1162.6 2495.4,1159.0C2494.5,1155.4 2491.9,1148.9 2489.5,1144.5C2487.1,1140.1 2484.2,1133.1 2483.0,1129.0C2481.8,1124.9 2479.1,1118.6 2477.0,1115.0C2474.8,1111.4 2472.1,1104.9 2470.9,1100.5C2469.7,1096.1 2467.2,1089.9 2465.3,1086.8C2463.4,1083.7 2460.7,1077.2 2459.3,1072.3C2458.0,1067.5 2455.1,1060.3 2453.0,1056.5C2450.9,1052.7 2448.2,1045.9 2447.0,1041.5C2445.8,1037.1 2443.1,1030.4 2441.0,1026.5C2438.9,1022.7 2436.6,1017.2 2435.9,1014.5C2434.7,1009.4 2431.9,1003.0 2427.5,995.0C2426.2,992.5 2424.1,987.4 2423.0,983.5C2421.8,979.6 2419.1,973.6 2417.0,970.0C2414.9,966.4 2412.4,960.6 2411.4,957.0C2410.5,953.4 2407.8,946.9 2405.5,942.5C2403.2,938.1 2400.3,931.1 2399.0,927.0C2397.8,922.9 2395.1,916.3 2393.0,912.5C2390.9,908.6 2388.1,901.9 2386.9,897.5C2385.7,893.1 2383.1,886.7 2381.0,883.3C2378.9,879.9 2376.5,874.0 2375.6,870.3C2374.6,866.5 2371.9,859.9 2369.6,855.5C2367.2,851.1 2364.1,843.5 2362.7,838.5C2361.3,833.5 2358.6,826.9 2356.7,823.7C2354.8,820.6 2352.4,814.7 2351.4,810.8C2350.5,806.8 2347.7,799.8 2345.2,795.2C2342.8,790.6 2339.9,783.6 2338.9,779.6C2337.8,775.7 2335.4,770.0 2333.6,767.0C2330.2,761.4 2327.0,753.0 2327.0,749.8C2327.0,748.9 2325.0,744.2 2322.5,739.5C2320.1,734.8 2316.9,727.0 2315.4,722.2C2313.9,717.4 2311.0,710.6 2308.9,707.0C2306.7,703.2 2304.2,696.9 2303.0,692.0C2300.5,682.2 2298.6,678.6 2292.9,673.5C2286.6,667.8 2283.0,666.7 2273.6,667.5C2263.1,668.3 2260.0,669.4 2256.3,673.3C2250.9,678.9 2248.1,683.9 2245.5,692.8C2244.0,697.6 2241.1,704.2 2239.0,707.5C2236.9,710.8 2234.0,717.3 2232.5,722.0C2231.0,726.7 2228.3,733.0 2226.5,736.0C2224.7,739.0 2222.4,744.4 2221.5,748.0C2219.4,756.4 2218.2,759.5 2214.8,765.0C2213.2,767.5 2210.8,773.3 2209.4,778.0C2208.0,782.7 2205.1,789.7 2202.9,793.7C2200.8,797.6 2198.1,804.4 2196.9,808.7C2195.8,813.0 2193.1,819.7 2190.9,823.7C2188.8,827.6 2186.1,834.4 2184.9,838.7C2182.8,846.3 2182.1,848.0 2176.7,858.5C2175.3,861.2 2173.6,865.8 2173.0,868.5C2171.5,874.8 2169.2,880.5 2166.2,884.9C2165.0,886.8 2163.0,891.5 2161.9,895.4C2159.0,905.5 2157.6,908.9 2154.1,914.9C2152.4,917.7 2149.9,923.9 2148.6,928.6C2147.3,933.3 2144.6,939.7 2142.7,942.8C2140.8,945.9 2138.2,952.1 2137.0,956.5C2135.8,960.9 2133.1,967.6 2131.0,971.5C2128.9,975.4 2126.2,981.9 2125.0,986.0C2123.8,990.1 2120.9,996.9 2118.5,1001.1C2116.1,1005.3 2113.4,1011.2 2112.5,1014.2C2111.7,1017.2 2109.3,1022.4 2107.4,1025.6C2105.4,1028.8 2102.3,1036.0 2100.5,1041.5C2098.7,1047.0 2095.9,1053.8 2094.2,1056.5C2092.5,1059.2 2090.2,1065.1 2089.0,1069.5C2087.8,1073.9 2084.9,1081.1 2082.5,1085.5C2080.1,1089.9 2077.6,1095.8 2076.9,1098.5C2075.6,1103.8 2074.0,1107.5 2069.6,1115.2C2068.1,1117.8 2065.9,1123.2 2064.8,1127.2C2063.7,1131.2 2061.1,1137.7 2059.0,1141.5C2056.9,1145.3 2054.3,1151.7 2053.2,1155.5C2050.5,1165.0 2049.5,1167.5 2046.0,1172.5C2044.4,1174.8 2042.2,1180.0 2041.1,1183.9C2040.0,1187.8 2037.3,1194.3 2035.2,1198.3C2033.0,1202.2 2030.0,1209.3 2028.5,1214.0C2027.0,1218.7 2024.3,1225.0 2022.5,1228.0C2020.7,1231.0 2018.0,1237.8 2016.5,1243.0C2015.0,1248.2 2012.3,1254.9 2010.5,1258.0C2008.6,1261.0 2006.2,1266.9 2005.0,1271.0C2003.8,1275.1 2001.1,1281.4 1999.1,1285.0C1997.0,1288.6 1994.3,1294.5 1993.1,1298.3C1991.8,1302.0 1989.3,1307.3 1987.3,1310.1C1985.4,1312.9 1982.5,1318.4 1981.0,1322.2C1979.4,1326.1 1976.8,1330.7 1975.2,1332.4C1973.6,1334.1 1971.1,1337.5 1969.7,1340.0C1966.9,1344.8 1957.3,1354.8 1947.8,1362.8C1944.3,1365.8 1940.1,1368.2 1936.5,1369.4C1933.4,1370.3 1927.7,1372.9 1923.7,1375.0C1915.5,1379.4 1906.6,1381.0 1889.5,1381.0C1875.2,1381.0 1867.6,1379.6 1859.5,1375.4C1855.7,1373.4 1849.4,1370.4 1845.5,1368.8C1841.7,1367.2 1837.4,1364.9 1836.0,1363.6C1834.6,1362.3 1830.8,1359.6 1827.5,1357.5C1820.2,1352.9 1805.6,1339.6 1799.6,1332.1C1797.1,1329.0 1793.9,1325.2 1792.5,1323.5C1791.0,1321.8 1788.1,1318.0 1786.0,1315.0C1783.9,1312.0 1781.3,1308.6 1780.1,1307.6C1779.0,1306.6 1776.8,1303.6 1775.4,1301.1C1773.9,1298.6 1771.0,1294.6 1768.9,1292.4C1766.9,1290.1 1764.4,1286.7 1763.5,1284.9C1762.5,1283.0 1760.0,1279.4 1757.9,1276.9C1755.8,1274.3 1752.7,1269.8 1751.0,1266.9C1749.2,1263.9 1746.4,1259.9 1744.6,1258.0C1742.8,1256.1 1740.1,1252.5 1738.7,1250.0C1737.3,1247.5 1734.8,1243.9 1733.1,1242.1C1731.5,1240.2 1728.9,1236.3 1727.4,1233.6C1725.9,1230.8 1723.1,1226.5 1721.0,1224.0C1719.0,1221.5 1716.3,1217.5 1715.0,1215.0C1713.8,1212.5 1711.2,1208.8 1709.4,1206.8C1707.6,1204.7 1704.7,1200.5 1703.1,1197.3C1701.5,1194.1 1699.2,1190.6 1698.0,1189.5C1696.7,1188.4 1694.1,1185.0 1692.2,1182.0C1690.3,1179.0 1687.0,1174.6 1684.9,1172.3C1682.8,1170.1 1680.2,1166.4 1679.1,1164.2C1678.0,1162.0 1674.8,1157.6 1672.0,1154.4C1669.3,1151.3 1667.0,1148.3 1667.0,1147.9C1667.0,1147.5 1664.7,1144.5 1661.9,1141.3C1659.1,1138.1 1656.1,1134.2 1655.3,1132.5C1654.4,1130.8 1652.0,1127.5 1649.9,1125.2C1647.8,1122.8 1644.9,1118.7 1643.4,1116.2C1641.9,1113.6 1638.9,1109.5 1636.7,1107.0C1634.6,1104.5 1631.9,1100.7 1630.8,1098.5C1629.7,1096.3 1627.0,1092.7 1625.0,1090.4C1622.9,1088.1 1620.3,1084.3 1619.3,1081.9C1618.2,1079.5 1615.0,1075.1 1612.2,1072.2C1607.5,1067.5 1607.0,1066.6 1607.0,1062.4C1607.0,1057.3 1609.9,1053.7 1614.8,1052.6C1616.3,1052.3 1621.1,1050.2 1625.5,1048.0C1629.9,1045.9 1636.6,1043.4 1640.5,1042.5C1645.0,1041.5 1648.7,1039.9 1651.1,1038.0C1654.9,1035.0 1658.2,1033.3 1666.1,1030.6C1668.6,1029.7 1672.5,1027.4 1674.6,1025.6C1676.8,1023.7 1681.6,1020.8 1685.3,1019.0C1688.9,1017.3 1692.7,1014.9 1693.7,1013.6C1694.7,1012.4 1697.6,1010.0 1700.2,1008.2C1705.3,1004.7 1724.1,984.9 1727.2,979.8C1728.3,978.1 1730.9,974.6 1733.0,972.1C1735.2,969.6 1738.0,965.0 1739.4,961.9C1740.7,958.8 1743.6,953.6 1745.7,950.3C1748.6,945.9 1750.2,941.9 1751.4,935.9C1752.4,931.3 1754.3,924.8 1755.6,921.6C1759.6,911.6 1761.1,901.8 1761.7,880.5C1762.3,859.4 1761.1,840.2 1758.5,831.5C1754.5,817.6 1752.1,808.9 1750.7,802.7C1749.7,798.8 1747.5,793.7 1745.6,790.7C1743.7,787.8 1740.8,782.6 1739.2,779.0C1737.5,775.4 1735.1,771.4 1733.8,770.0C1732.5,768.6 1730.3,765.9 1728.9,763.9C1723.3,755.5 1703.0,736.2 1695.4,732.0C1693.3,730.7 1690.0,728.4 1688.1,726.8C1686.2,725.1 1681.0,722.0 1676.6,719.9C1672.1,717.7 1667.0,714.8 1665.1,713.5C1663.2,712.1 1658.4,710.0 1654.6,708.8C1650.7,707.7 1644.1,705.0 1639.9,702.9C1634.5,700.2 1629.0,698.5 1620.9,697.0C1614.6,695.8 1607.0,694.1 1604.0,693.3C1587.4,688.7 1583.8,687.8 1576.5,686.9C1566.9,685.7 1283.0,683.7 1236.2,684.5C1218.4,684.9 1202.8,685.5 1201.6,686.0C1195.9,688.1 1193.5,695.2 1196.4,700.9C1198.5,704.9 1204.6,710.0 1207.5,710.1C1208.9,710.2 1213.9,710.3 1218.8,710.4C1226.5,710.6 1228.5,711.0 1235.5,714.2C1239.9,716.2 1245.8,718.5 1248.5,719.4C1252.3,720.6 1255.6,723.0 1262.2,729.3C1270.5,737.2 1271.0,737.9 1274.1,746.5C1275.8,751.5 1278.0,757.1 1279.0,759.1C1283.3,767.4 1283.2,764.8 1283.1,1012.0C1283.0,1254.6 1282.6,1316.3 1280.9,1323.8C1280.4,1326.2 1278.9,1330.7 1277.6,1333.8C1276.3,1337.0 1274.5,1341.9 1273.5,1344.8C1271.0,1352.7 1259.6,1365.1 1251.0,1369.4C1247.4,1371.2 1242.2,1374.1 1239.5,1375.8C1233.8,1379.4 1225.6,1380.9 1212.2,1381.0C1207.5,1381.0 1202.5,1381.6 1200.6,1382.4C1196.0,1384.3 1193.0,1388.5 1193.0,1393.0C1193.0,1397.8 1195.8,1401.3 1201.1,1403.4C1205.0,1405.0 1215.8,1405.1 1330.9,1405.0C1400.0,1405.0 1459.4,1405.4 1463.0,1405.8C1466.6,1406.3 1472.3,1406.8 1475.7,1406.9C1481.3,1407.0 1482.3,1406.7 1485.5,1403.9ZM1408.1,1029.7C1406.7,1029.1 1404.7,1026.9 1403.6,1025.0C1401.5,1021.5 1401.5,1020.7 1401.2,885.0C1401.0,753.7 1401.0,748.4 1402.8,745.1C1405.9,739.4 1409.8,738.1 1428.1,736.5C1467.1,733.2 1497.2,733.7 1517.0,738.0C1522.2,739.2 1532.3,741.2 1539.4,742.5C1550.1,744.5 1553.3,745.6 1558.9,748.9C1562.5,751.0 1567.3,753.3 1569.5,754.0C1575.5,755.9 1580.2,758.5 1583.0,761.5C1584.4,763.0 1587.2,765.1 1589.3,766.1C1593.0,768.0 1610.0,784.0 1610.0,785.7C1610.0,786.1 1612.2,788.9 1614.9,791.8C1617.6,794.9 1620.3,799.0 1621.0,801.3C1621.7,803.6 1624.2,809.3 1626.6,814.0C1631.6,823.7 1632.3,827.6 1634.0,854.0C1635.3,875.0 1635.3,892.4 1634.0,907.0C1632.4,924.6 1631.2,929.8 1626.9,938.3C1624.7,942.6 1622.0,948.6 1620.8,951.7C1619.7,954.7 1617.3,958.9 1615.6,960.9C1613.9,962.9 1611.2,966.3 1609.8,968.5C1604.0,977.3 1586.7,993.3 1577.9,998.1C1575.2,999.6 1571.4,1002.2 1569.6,1003.8C1567.8,1005.4 1562.7,1008.0 1558.4,1009.5C1554.0,1011.1 1549.3,1013.2 1547.8,1014.2C1543.0,1017.5 1537.9,1019.1 1524.6,1021.5C1517.4,1022.8 1506.0,1025.0 1499.3,1026.4C1483.6,1029.6 1464.6,1031.0 1434.5,1031.0C1417.4,1031.0 1409.8,1030.6 1408.1,1029.7ZM2139.0,1118.0C2131.4,1117.4 2128.3,1115.9 2126.9,1112.3C2125.7,1109.1 2126.8,1105.4 2130.4,1100.7C2131.8,1098.9 2133.6,1094.5 2134.5,1090.9C2136.9,1080.9 2138.0,1077.9 2141.6,1072.0C2143.4,1069.0 2145.7,1063.3 2146.6,1059.5C2148.4,1052.3 2150.6,1047.1 2154.6,1041.0C2155.9,1039.1 2157.8,1034.2 2158.9,1030.1C2160.0,1026.0 2162.8,1019.6 2165.1,1015.8C2167.4,1012.0 2170.3,1005.3 2171.5,1000.9C2172.8,996.5 2175.4,990.3 2177.3,987.2C2179.2,984.1 2181.8,977.9 2183.0,973.5C2184.2,969.1 2186.9,962.6 2189.0,959.0C2191.2,955.4 2193.9,948.9 2195.0,944.5C2196.2,940.1 2198.9,933.6 2201.0,930.0C2203.1,926.4 2205.6,920.8 2206.5,917.5C2208.8,909.2 2209.9,906.3 2213.6,900.2C2215.4,897.3 2217.6,891.9 2218.6,888.2C2219.5,884.5 2222.2,877.7 2224.6,873.0C2226.9,868.3 2229.3,862.2 2230.0,859.5C2231.5,853.1 2234.3,850.0 2238.7,850.0C2242.6,850.0 2244.1,851.9 2247.0,860.8C2248.1,864.3 2250.6,869.8 2252.4,873.3C2254.2,876.7 2256.5,882.6 2257.4,886.5C2258.4,890.4 2260.9,896.4 2263.0,900.0C2265.2,903.7 2267.7,909.9 2268.9,914.4C2270.0,918.7 2272.4,924.8 2274.3,927.9C2276.2,931.0 2278.6,936.0 2279.5,939.0C2282.5,948.8 2284.3,953.4 2286.0,956.0C2289.2,960.6 2291.2,965.3 2293.2,972.4C2294.2,976.3 2296.9,982.5 2299.1,986.1C2301.3,989.7 2304.0,996.0 2305.1,1000.1C2306.2,1004.2 2308.6,1009.8 2310.5,1012.7C2312.4,1015.5 2315.1,1021.6 2316.6,1026.2C2318.0,1030.8 2320.2,1036.1 2321.5,1038.0C2325.3,1044.0 2327.6,1049.2 2329.4,1056.0C2330.4,1059.6 2332.9,1065.4 2335.1,1069.0C2337.6,1073.3 2339.8,1078.9 2341.4,1085.3C2343.2,1092.7 2344.5,1095.8 2347.0,1098.6C2348.7,1100.6 2350.6,1103.3 2351.1,1104.7C2352.4,1108.1 2352.2,1113.2 2350.7,1115.1C2347.5,1119.3 2349.3,1119.2 2245.1,1118.9C2190.3,1118.7 2142.6,1118.3 2139.0,1118.0Z"/></g><g class="wm__l" style="--i:2"><path d="M3086.9,1424.0C3092.4,1423.5 3099.9,1422.4 3103.7,1421.6C3107.4,1420.7 3113.4,1419.4 3117.0,1418.7C3120.6,1417.9 3126.9,1416.7 3131.0,1416.1C3148.9,1413.3 3152.0,1412.6 3160.1,1408.9C3164.8,1406.8 3171.0,1404.6 3173.8,1404.0C3183.0,1402.3 3189.7,1400.0 3194.1,1397.0C3196.5,1395.5 3202.3,1393.0 3207.0,1391.5C3211.7,1390.0 3217.1,1387.6 3219.0,1386.1C3223.5,1382.5 3226.0,1381.2 3232.7,1378.9C3235.7,1377.9 3240.0,1375.4 3242.1,1373.5C3244.3,1371.5 3248.6,1368.8 3251.8,1367.4C3254.9,1366.0 3259.3,1363.2 3261.5,1361.1C3263.7,1358.9 3267.4,1356.2 3269.8,1355.1C3272.1,1353.9 3275.2,1351.6 3276.7,1349.9C3278.2,1348.3 3281.0,1345.9 3283.0,1344.8C3293.5,1338.3 3327.1,1305.9 3337.0,1292.5C3339.1,1289.8 3341.7,1286.6 3343.0,1285.5C3344.2,1284.4 3346.0,1281.9 3347.0,1280.0C3348.0,1278.1 3350.6,1274.5 3352.8,1272.0C3354.9,1269.5 3358.0,1265.0 3359.5,1262.0C3361.0,1259.0 3363.7,1254.7 3365.5,1252.5C3367.3,1250.3 3370.2,1245.5 3371.8,1241.8C3373.5,1238.0 3376.2,1233.1 3377.9,1230.8C3379.6,1228.4 3382.0,1223.3 3383.3,1219.4C3384.6,1215.4 3387.3,1209.8 3389.3,1206.7C3391.8,1203.0 3393.8,1198.1 3395.5,1191.4C3396.9,1186.0 3399.1,1179.8 3400.4,1177.5C3403.8,1171.7 3405.5,1166.0 3407.9,1153.0C3409.0,1146.6 3411.3,1137.0 3413.0,1131.5C3420.2,1108.1 3422.8,1047.1 3419.0,992.5C3417.6,972.8 3416.4,965.2 3412.5,952.0C3410.7,945.7 3408.3,935.3 3407.1,929.0C3405.5,920.6 3403.9,915.3 3401.0,909.5C3398.8,905.1 3396.4,898.3 3395.5,894.3C3394.5,889.9 3392.3,884.6 3389.8,880.5C3387.6,876.8 3384.9,871.0 3383.8,867.7C3382.6,864.4 3379.8,859.0 3377.5,855.6C3375.2,852.2 3372.2,846.9 3370.7,843.6C3369.2,840.4 3366.7,836.2 3365.0,834.3C3363.3,832.5 3360.7,828.3 3359.1,825.2C3357.5,822.1 3354.8,818.1 3353.0,816.5C3349.7,813.4 3346.3,807.6 3344.9,802.6C3343.5,797.9 3345.5,792.9 3351.6,785.9C3354.7,782.4 3358.1,777.8 3359.2,775.7C3360.3,773.5 3362.9,769.9 3365.0,767.7C3367.1,765.4 3370.1,760.6 3371.7,757.0C3373.3,753.4 3376.3,748.3 3378.2,745.8C3380.2,743.2 3382.6,738.8 3383.5,736.0C3384.4,733.3 3386.9,728.4 3389.0,725.2C3391.1,722.1 3393.8,716.1 3395.0,712.0C3396.2,707.9 3399.0,701.6 3401.1,698.0C3403.4,694.0 3405.9,687.8 3407.4,682.0C3408.8,676.8 3411.3,669.5 3413.0,665.9C3416.7,658.0 3418.5,648.9 3420.5,627.5C3423.3,598.5 3423.4,584.7 3421.1,558.0C3418.6,529.5 3417.3,521.6 3413.0,510.1C3411.3,505.5 3408.8,496.5 3407.5,490.3C3405.8,482.2 3404.0,476.9 3401.4,472.2C3399.4,468.5 3396.7,462.1 3395.3,458.0C3394.0,453.9 3391.6,448.5 3390.0,446.0C3388.4,443.5 3385.8,438.6 3384.2,435.0C3381.2,428.3 3379.9,426.7 3376.5,425.6C3371.6,424.2 3371.5,425.0 3371.5,454.7C3371.4,484.4 3370.9,489.5 3366.0,509.5C3364.4,516.1 3361.9,527.3 3360.6,534.4C3358.9,543.1 3357.2,549.2 3355.2,552.9C3353.6,556.0 3350.9,562.9 3349.1,568.3C3347.3,573.7 3344.3,580.5 3342.4,583.4C3340.5,586.3 3338.0,591.1 3336.9,594.1C3335.8,597.1 3333.0,601.9 3330.8,604.8C3328.6,607.8 3325.9,612.2 3324.8,614.7C3323.7,617.2 3321.1,621.1 3319.0,623.4C3317.0,625.7 3314.5,629.0 3313.5,630.9C3312.6,632.7 3310.1,636.1 3308.1,638.4C3306.0,640.6 3303.0,644.5 3301.5,647.0C3294.3,658.5 3272.6,680.3 3263.5,685.1C3260.2,686.9 3256.0,689.6 3254.1,691.2C3252.3,692.8 3249.8,694.5 3248.6,695.0C3247.5,695.5 3242.3,697.7 3237.2,699.9C3232.2,702.2 3227.1,704.0 3226.0,704.0C3224.9,704.0 3221.3,702.7 3218.1,701.1C3215.0,699.5 3209.5,697.4 3206.0,696.5C3202.5,695.6 3196.7,693.4 3193.0,691.5C3185.4,687.7 3178.7,685.6 3168.0,683.9C3163.9,683.3 3156.4,681.3 3151.3,679.4C3139.2,675.1 3135.4,674.4 3103.5,671.3C3067.5,667.8 3038.6,667.7 3007.0,670.8C2979.6,673.6 2970.2,675.2 2959.6,679.1C2955.2,680.8 2946.3,683.2 2940.0,684.6C2932.0,686.2 2926.2,688.2 2921.0,690.9C2916.9,693.0 2909.7,695.7 2905.0,696.9C2900.3,698.1 2893.3,700.9 2889.4,703.1C2878.6,709.0 2870.9,708.5 2861.5,701.4C2859.8,700.2 2856.0,698.1 2853.0,696.7C2850.0,695.4 2846.4,693.0 2845.0,691.5C2843.6,690.0 2840.7,687.6 2838.5,686.2C2830.2,681.0 2812.5,664.0 2800.5,650.0C2796.7,645.5 2791.6,639.7 2789.4,637.2C2787.1,634.6 2784.5,630.9 2783.5,629.0C2782.6,627.1 2780.0,623.4 2777.8,620.7C2775.6,618.1 2772.5,613.1 2770.9,609.5C2769.3,605.9 2766.4,601.0 2764.6,598.5C2762.7,596.1 2760.2,591.0 2759.0,587.3C2757.7,583.6 2755.0,577.7 2753.0,574.2C2750.3,569.8 2748.4,564.7 2746.7,557.2C2745.3,551.2 2743.0,543.9 2741.7,540.9C2737.8,532.5 2736.3,525.8 2734.0,507.5C2732.8,498.1 2731.2,486.1 2730.4,480.8C2728.0,464.2 2728.6,448.2 2732.3,434.8C2734.3,427.6 2733.4,423.6 2729.8,423.2C2727.6,422.9 2726.4,424.0 2721.7,430.2C2715.5,438.5 2714.0,441.3 2711.5,449.0C2710.5,452.0 2708.2,457.5 2706.4,461.2C2704.5,464.9 2702.1,471.4 2700.9,475.7C2699.8,480.0 2697.1,487.2 2694.8,491.7C2691.6,498.3 2690.1,503.4 2686.8,519.7C2684.6,530.6 2682.1,542.6 2681.3,546.5C2679.3,555.9 2678.4,605.9 2679.9,619.8C2680.5,625.3 2682.1,634.3 2683.5,639.7C2684.9,645.1 2687.2,654.7 2688.5,661.0C2690.2,669.0 2692.2,674.8 2694.9,680.0C2697.0,684.1 2699.8,691.2 2701.0,695.7C2702.4,700.8 2704.5,705.8 2706.6,708.7C2708.5,711.3 2711.1,716.9 2712.5,721.1C2714.0,725.4 2716.8,731.1 2719.0,734.1C2721.2,737.0 2723.8,741.8 2724.7,744.7C2725.6,747.6 2728.1,752.1 2730.3,754.7C2732.4,757.3 2735.5,762.0 2737.0,765.0C2738.5,768.0 2740.8,771.4 2742.0,772.5C2743.2,773.6 2746.0,777.5 2748.1,781.2C2750.2,784.9 2753.6,789.2 2755.6,790.8C2760.1,794.5 2762.1,800.0 2761.0,805.9C2760.4,809.1 2759.0,811.5 2755.2,815.4C2752.5,818.2 2749.5,821.9 2748.7,823.5C2747.9,825.1 2745.3,828.6 2743.1,831.2C2740.8,833.8 2738.0,838.0 2736.8,840.7C2735.6,843.3 2732.9,847.6 2730.8,850.1C2728.7,852.7 2726.0,857.1 2724.9,860.1C2723.8,863.0 2721.1,867.9 2718.9,871.0C2716.7,874.2 2713.9,880.0 2712.6,884.2C2711.3,888.4 2708.7,894.4 2706.8,897.6C2704.6,901.3 2702.3,907.4 2700.7,913.7C2699.2,919.2 2696.5,927.1 2694.7,931.2C2692.6,935.5 2690.5,942.3 2689.5,948.0C2687.8,957.4 2684.9,969.8 2681.2,983.5C2678.2,994.4 2677.0,1011.4 2677.0,1043.4C2677.0,1081.2 2678.5,1099.4 2683.0,1114.3C2685.4,1122.6 2686.7,1128.6 2688.5,1140.5C2690.3,1152.3 2692.5,1160.3 2694.9,1164.5C2697.0,1168.2 2699.5,1175.4 2701.5,1183.8C2702.3,1187.3 2704.8,1193.1 2706.9,1196.8C2709.1,1200.5 2712.1,1207.1 2713.5,1211.5C2714.9,1215.9 2717.3,1221.2 2719.0,1223.4C2720.6,1225.5 2723.1,1230.5 2724.6,1234.4C2726.1,1238.3 2728.7,1243.3 2730.5,1245.5C2732.3,1247.7 2735.0,1252.0 2736.5,1255.0C2738.0,1258.0 2740.7,1262.3 2742.5,1264.5C2744.3,1266.7 2746.9,1270.8 2748.3,1273.5C2749.7,1276.2 2752.0,1279.6 2753.5,1281.0C2755.0,1282.4 2757.9,1286.0 2759.8,1289.0C2761.7,1292.0 2765.0,1296.3 2767.1,1298.5C2769.2,1300.7 2776.3,1308.3 2782.7,1315.4C2789.2,1322.5 2796.7,1330.1 2799.5,1332.3C2802.2,1334.5 2805.1,1337.1 2805.8,1338.1C2806.5,1339.1 2809.2,1341.4 2811.8,1343.1C2814.4,1344.9 2818.6,1348.2 2821.1,1350.6C2823.6,1352.9 2827.5,1355.7 2829.6,1356.9C2831.7,1358.0 2834.6,1360.1 2835.9,1361.5C2837.3,1363.0 2841.1,1365.5 2844.4,1367.2C2847.8,1368.8 2851.9,1371.5 2853.6,1373.1C2855.2,1374.7 2860.4,1377.6 2865.0,1379.5C2869.6,1381.4 2874.3,1383.8 2875.4,1384.9C2878.4,1387.6 2882.5,1389.4 2890.0,1391.4C2893.6,1392.4 2899.7,1395.0 2903.7,1397.1C2908.4,1399.7 2914.1,1401.8 2920.1,1403.1C2925.2,1404.2 2932.8,1406.6 2937.0,1408.4C2945.8,1412.3 2950.0,1413.3 2967.8,1416.0C2975.1,1417.1 2985.7,1419.1 2991.3,1420.4C3004.9,1423.6 3008.5,1424.2 3022.0,1425.1C3035.5,1426.0 3072.7,1425.4 3086.9,1424.0ZM3034.5,1374.4C3032.8,1374.1 3022.3,1372.6 3011.0,1370.9C2988.5,1367.6 2981.6,1366.0 2975.5,1362.5C2973.3,1361.2 2967.7,1359.0 2963.1,1357.4C2958.5,1355.9 2952.9,1353.3 2950.6,1351.5C2948.3,1349.8 2943.1,1346.6 2939.2,1344.5C2935.2,1342.4 2931.5,1339.9 2930.9,1338.9C2930.4,1337.9 2927.4,1335.3 2924.2,1333.1C2916.8,1327.9 2896.0,1307.0 2891.6,1300.3C2890.3,1298.2 2887.6,1294.8 2885.7,1292.7C2883.9,1290.7 2881.0,1286.6 2879.5,1283.7C2877.9,1280.9 2875.0,1276.4 2872.9,1273.9C2870.8,1271.4 2868.2,1267.2 2867.1,1264.7C2866.0,1262.1 2863.3,1257.6 2861.0,1254.6C2858.8,1251.7 2856.0,1246.4 2854.8,1242.9C2853.6,1239.4 2851.0,1234.0 2849.0,1230.8C2846.9,1227.7 2844.5,1222.1 2843.6,1218.5C2842.7,1214.8 2840.0,1207.9 2837.5,1203.2C2834.5,1197.1 2832.5,1191.3 2831.0,1184.0C2829.8,1178.2 2827.5,1170.3 2825.9,1166.5C2821.9,1156.4 2821.3,1153.6 2818.0,1128.8C2816.4,1116.5 2814.1,1100.8 2813.1,1093.9C2810.2,1075.3 2808.9,1045.0 2810.0,1022.5C2811.2,998.0 2811.7,993.4 2814.5,976.5C2815.8,968.8 2817.9,954.6 2819.1,945.0C2820.6,932.5 2822.1,925.1 2824.3,919.0C2825.9,914.3 2828.1,906.9 2829.2,902.5C2833.3,885.2 2834.2,882.4 2837.5,877.1C2839.3,874.0 2841.8,868.3 2842.9,864.3C2844.1,860.4 2846.6,854.9 2848.6,852.1C2850.5,849.2 2853.3,843.4 2854.8,839.1C2856.4,834.8 2859.2,829.3 2861.2,826.9C2863.2,824.5 2865.9,820.2 2867.3,817.3C2868.8,814.5 2871.8,810.1 2874.0,807.5C2876.3,804.9 2878.9,801.5 2879.8,800.1C2881.4,797.4 2885.9,792.4 2896.8,781.2C2900.2,777.7 2903.5,774.1 2904.2,773.1C2904.9,772.2 2908.1,769.5 2911.2,767.2C2914.4,764.9 2917.4,762.1 2918.0,761.0C2918.6,759.9 2922.1,757.3 2925.8,755.1C2929.5,753.0 2933.6,750.0 2934.9,748.7C2936.2,747.3 2940.2,744.9 2943.9,743.4C2947.5,741.8 2952.1,739.4 2954.0,737.9C2959.2,734.0 2962.6,732.5 2972.4,730.1C2977.2,728.9 2983.3,726.9 2985.9,725.6C2998.7,719.1 3037.4,716.2 3074.1,719.0C3089.2,720.2 3096.2,721.7 3105.8,725.9C3109.5,727.5 3116.7,729.8 3121.8,731.0C3128.2,732.5 3132.9,734.4 3136.9,737.0C3140.1,739.1 3145.5,741.8 3148.9,743.0C3152.3,744.3 3156.9,747.0 3159.3,749.0C3161.6,751.0 3165.8,753.9 3168.6,755.3C3174.1,758.1 3178.6,762.1 3194.3,777.7C3208.1,791.5 3214.2,798.7 3217.1,804.5C3218.4,807.1 3221.2,811.2 3223.2,813.5C3225.2,815.8 3228.1,820.3 3229.5,823.6C3230.9,826.8 3233.2,830.6 3234.4,832.0C3237.2,835.0 3239.2,838.8 3241.4,845.7C3242.4,848.5 3244.4,852.6 3245.9,854.7C3250.0,860.4 3251.0,862.5 3253.2,870.4C3254.3,874.3 3256.9,880.7 3259.1,884.6C3261.9,889.7 3263.6,894.7 3265.0,901.6C3266.1,907.1 3268.4,915.0 3270.1,919.3C3274.4,930.3 3274.7,931.4 3277.0,948.9C3278.2,957.5 3280.4,970.6 3282.0,978.1C3286.6,999.3 3287.5,1011.0 3287.3,1047.5C3287.2,1084.9 3286.0,1104.6 3282.4,1123.7C3281.1,1130.9 3279.1,1143.3 3278.0,1151.2C3275.1,1171.7 3274.2,1175.6 3270.5,1184.0C3268.6,1188.1 3266.2,1195.3 3265.0,1200.0C3263.8,1205.0 3261.3,1211.2 3259.0,1215.0C3256.9,1218.6 3254.2,1224.8 3253.0,1228.7C3251.8,1232.7 3249.0,1238.8 3246.8,1242.2C3244.5,1245.7 3241.8,1251.1 3240.7,1254.3C3239.7,1257.5 3237.2,1262.5 3235.2,1265.3C3233.3,1268.2 3230.7,1272.8 3229.5,1275.6C3228.2,1278.3 3225.9,1282.1 3224.3,1283.9C3222.8,1285.8 3219.7,1290.1 3217.5,1293.5C3209.8,1305.5 3190.5,1325.6 3179.5,1333.0C3176.8,1334.8 3172.8,1337.9 3170.7,1339.7C3168.6,1341.5 3164.6,1344.1 3161.7,1345.4C3158.8,1346.7 3154.3,1349.3 3151.7,1351.3C3148.9,1353.5 3144.0,1355.8 3139.7,1357.1C3135.7,1358.3 3129.1,1361.0 3125.0,1363.1C3118.1,1366.7 3115.8,1367.3 3095.0,1370.6C3077.0,1373.4 3069.0,1374.2 3055.0,1374.5C3045.4,1374.7 3036.2,1374.6 3034.5,1374.4Z"/></g><g class="wm__l" style="--i:3"><path d="M4146.0,1421.0C4147.6,1421.0 4153.1,1415.8 4154.7,1412.6C4156.2,1410.0 4156.4,1406.0 4156.5,1387.0C4156.6,1374.6 4156.9,1243.7 4157.3,1096.0C4157.7,941.2 4158.5,816.9 4159.1,802.5C4160.2,774.5 4162.4,752.3 4164.5,747.3C4166.8,741.8 4174.8,732.4 4182.3,726.3C4188.4,721.4 4190.7,720.3 4199.4,717.7C4214.3,713.4 4218.7,712.3 4227.4,710.6C4238.0,708.5 4243.4,705.8 4245.4,701.6C4247.9,696.3 4247.5,691.3 4244.2,688.0L4241.4,685.2L4212.9,684.6C4197.3,684.2 4148.1,684.0 4103.5,684.2C4024.8,684.5 4022.4,684.6 4018.5,686.5C4015.9,687.8 4013.9,689.8 4012.7,692.2C4009.9,697.9 4011.7,702.2 4018.4,706.5C4026.1,711.4 4030.6,713.0 4040.0,714.2C4050.1,715.4 4068.1,719.5 4071.8,721.4C4073.3,722.2 4075.6,724.0 4077.0,725.5C4078.4,727.0 4081.9,730.0 4084.8,732.2C4089.0,735.3 4090.8,737.6 4093.5,743.3C4095.4,747.3 4098.1,752.6 4099.5,755.1C4100.9,757.6 4102.5,762.6 4103.1,766.1C4103.9,770.5 4104.3,836.6 4104.4,972.5C4104.6,1082.5 4105.0,1175.4 4105.4,1179.0C4106.0,1184.3 4105.8,1186.1 4104.3,1188.9C4101.1,1195.0 4095.5,1194.7 4091.5,1188.2C4090.4,1186.4 4087.7,1182.6 4085.5,1179.8C4083.3,1177.0 4080.4,1173.1 4079.1,1171.1C4077.8,1169.1 4074.5,1165.2 4071.9,1162.3C4069.2,1159.5 4067.0,1156.7 4067.0,1156.1C4067.0,1155.6 4064.8,1152.8 4062.2,1149.8C4059.5,1146.9 4056.1,1142.5 4054.6,1140.1C4053.1,1137.7 4050.2,1133.9 4048.1,1131.6C4046.1,1129.4 4043.1,1125.7 4041.5,1123.5C4039.9,1121.3 4038.0,1119.1 4037.3,1118.7C4036.6,1118.3 4034.2,1115.3 4032.0,1112.0C4029.8,1108.8 4027.0,1105.4 4025.7,1104.3C4024.5,1103.3 4021.5,1099.9 4019.2,1096.8C4016.9,1093.7 4014.2,1090.5 4013.2,1089.8C4012.2,1089.1 4010.3,1086.9 4009.0,1085.0C4007.7,1083.1 4004.8,1079.5 4002.6,1077.0C3998.8,1072.8 3993.4,1066.1 3985.2,1055.7C3981.6,1051.0 3973.4,1041.2 3965.0,1031.4C3953.4,1018.0 3941.9,1004.0 3934.6,994.5C3931.7,990.6 3928.5,986.8 3927.5,986.0C3926.6,985.3 3924.4,982.6 3922.7,980.1C3921.0,977.6 3918.3,974.4 3916.7,973.1C3915.2,971.8 3913.2,969.4 3912.3,967.7C3911.5,966.0 3908.6,962.3 3906.1,959.6C3903.5,956.8 3900.3,952.9 3898.9,951.0C3897.6,949.1 3894.5,945.2 3892.0,942.3C3889.5,939.5 3886.3,935.4 3884.7,933.3C3881.2,928.5 3876.3,922.1 3870.0,914.5C3867.3,911.2 3863.7,906.5 3862.2,904.0C3860.6,901.5 3858.3,898.6 3857.0,897.5C3855.8,896.4 3853.1,893.0 3851.0,890.0C3848.9,887.0 3846.2,883.6 3845.0,882.5C3843.8,881.4 3841.1,878.0 3839.0,875.0C3836.9,872.0 3834.2,868.6 3833.0,867.5C3831.8,866.4 3829.1,863.0 3827.0,860.0C3824.9,857.0 3822.0,853.4 3820.5,852.0C3819.0,850.6 3816.6,847.7 3815.2,845.5C3812.8,841.7 3811.2,839.7 3799.0,825.8C3796.3,822.6 3792.8,818.1 3791.4,815.8C3789.9,813.4 3786.5,809.1 3783.8,806.2C3781.2,803.2 3779.0,800.4 3779.0,800.0C3779.0,799.5 3776.9,796.7 3774.4,793.9C3771.9,791.0 3768.5,786.5 3766.8,783.9C3765.2,781.2 3763.0,778.4 3761.9,777.6C3760.8,776.9 3758.1,773.6 3755.8,770.4C3753.6,767.2 3750.0,762.5 3747.9,760.0C3743.4,754.8 3738.4,748.4 3733.7,742.0C3732.0,739.6 3728.5,735.3 3726.0,732.5C3723.5,729.8 3719.9,725.5 3718.0,723.0C3716.1,720.5 3713.5,717.4 3712.3,716.0C3711.0,714.6 3708.2,711.1 3706.0,708.1C3699.6,699.3 3687.1,687.2 3683.1,685.8C3680.4,684.9 3656.8,684.5 3588.9,684.2L3498.4,683.9L3495.7,686.0C3492.2,688.7 3490.6,694.8 3491.9,699.8C3493.7,706.4 3495.3,707.7 3503.7,709.5C3514.3,711.8 3538.8,719.7 3542.6,722.1C3544.3,723.1 3546.5,724.9 3547.5,726.0C3548.5,727.2 3552.0,729.5 3555.1,731.2C3558.7,733.0 3561.8,735.7 3563.4,738.0C3564.8,740.1 3567.7,743.1 3569.9,744.6C3572.1,746.2 3574.9,749.5 3576.2,751.9C3577.5,754.4 3579.8,758.0 3581.3,759.9C3582.9,761.9 3585.2,765.3 3586.3,767.5L3588.5,771.5L3588.5,1046.0C3588.4,1334.3 3588.5,1327.6 3584.1,1336.0C3576.4,1350.6 3574.6,1353.2 3569.7,1356.9C3566.8,1359.0 3563.2,1362.2 3561.5,1363.9C3559.4,1366.1 3556.4,1367.7 3551.5,1369.2C3547.7,1370.3 3540.7,1372.7 3536.0,1374.5C3530.7,1376.5 3524.0,1378.2 3518.1,1378.9C3513.0,1379.6 3507.5,1380.7 3506.0,1381.5C3496.5,1386.4 3496.7,1397.5 3506.3,1402.8C3509.3,1404.4 3517.2,1404.5 3620.5,1404.5C3724.2,1404.5 3731.7,1404.4 3734.7,1402.8C3739.3,1400.2 3741.0,1397.3 3741.0,1391.8C3741.0,1382.5 3732.6,1376.9 3715.9,1375.0C3710.8,1374.5 3700.1,1372.5 3692.2,1370.6C3679.4,1367.7 3677.5,1366.9 3674.2,1363.8C3672.2,1361.9 3668.4,1358.9 3665.8,1357.1C3663.2,1355.4 3660.1,1352.5 3658.9,1350.7C3657.7,1349.0 3655.2,1345.9 3653.4,1344.0C3649.4,1339.8 3647.3,1335.0 3645.3,1325.6C3643.1,1315.1 3642.2,1225.2 3642.2,1014.7C3642.2,858.4 3642.3,836.8 3643.6,835.5C3645.7,833.4 3648.8,833.6 3654.0,836.2C3657.5,838.0 3659.3,839.9 3662.0,844.7C3665.5,850.8 3667.8,853.8 3677.6,864.8C3680.4,867.9 3683.7,872.1 3685.0,874.0C3686.3,875.9 3688.8,879.1 3690.6,881.1C3692.4,883.1 3695.4,887.2 3697.3,890.1C3699.2,893.1 3701.7,896.4 3703.0,897.5C3704.2,898.6 3706.9,902.0 3709.0,905.0C3711.1,908.0 3713.8,911.4 3715.0,912.5C3716.2,913.6 3718.6,916.5 3720.3,919.0C3722.0,921.5 3725.3,925.8 3727.7,928.5C3732.3,933.8 3737.0,939.8 3742.3,946.9C3744.0,949.4 3748.1,954.3 3751.2,957.8C3754.4,961.3 3757.0,964.6 3757.0,965.1C3757.0,965.6 3759.6,968.9 3762.8,972.5C3771.8,982.6 3778.2,990.4 3792.1,1008.5C3795.5,1012.9 3798.9,1016.9 3799.6,1017.3C3800.4,1017.7 3802.8,1020.7 3805.0,1024.0C3807.2,1027.2 3809.8,1030.5 3810.8,1031.2C3811.8,1031.9 3813.9,1034.3 3815.5,1036.5C3817.1,1038.7 3820.7,1043.0 3823.5,1046.2C3826.2,1049.3 3831.0,1054.7 3834.1,1058.2C3837.2,1061.6 3842.1,1067.0 3844.9,1070.1C3847.8,1073.3 3851.8,1078.0 3853.8,1080.8C3855.8,1083.6 3859.8,1088.9 3862.5,1092.6C3865.2,1096.3 3869.4,1101.4 3871.8,1103.9C3874.1,1106.4 3876.0,1108.8 3876.0,1109.3C3876.0,1109.7 3878.2,1112.5 3880.9,1115.3C3883.5,1118.2 3887.0,1122.5 3888.5,1125.0C3890.0,1127.5 3892.8,1131.1 3894.5,1133.1C3896.3,1135.1 3899.4,1139.2 3901.3,1142.1C3903.2,1145.1 3906.0,1148.6 3907.5,1150.0C3909.0,1151.4 3911.7,1154.8 3913.6,1157.7C3915.4,1160.5 3917.8,1163.4 3918.9,1164.0C3920.0,1164.6 3922.7,1167.6 3924.9,1170.8C3927.0,1174.0 3929.6,1177.2 3930.5,1178.0C3931.5,1178.8 3934.1,1182.0 3936.4,1185.0C3938.6,1188.0 3941.5,1191.6 3942.8,1193.0C3944.1,1194.4 3946.5,1197.5 3948.2,1200.0C3949.9,1202.5 3953.5,1206.8 3956.2,1209.7C3958.8,1212.5 3961.0,1215.3 3961.0,1215.8C3961.0,1216.4 3963.7,1219.8 3967.0,1223.4C3970.3,1227.1 3973.0,1230.4 3973.0,1230.9C3973.0,1231.3 3974.8,1233.4 3976.9,1235.6C3979.1,1237.7 3982.6,1241.8 3984.7,1244.7C3990.2,1252.2 3997.9,1261.8 4002.5,1267.0C4004.8,1269.5 4007.9,1273.3 4009.5,1275.5C4011.1,1277.7 4014.0,1281.1 4015.9,1283.1C4017.9,1285.1 4022.7,1290.5 4026.5,1295.0C4030.3,1299.5 4035.6,1305.3 4038.1,1307.9C4040.6,1310.4 4043.8,1314.1 4045.0,1316.0C4046.3,1317.9 4049.3,1321.8 4051.7,1324.5C4061.5,1335.9 4068.0,1343.9 4069.7,1346.7C4071.4,1349.5 4074.9,1353.7 4086.1,1366.3C4088.6,1369.2 4091.7,1373.1 4093.0,1375.0C4094.3,1376.9 4096.8,1380.1 4098.5,1382.0C4100.3,1383.9 4102.8,1387.1 4104.1,1389.1C4106.5,1392.7 4119.3,1407.2 4123.9,1411.6C4127.4,1414.8 4142.0,1422.2 4143.7,1421.5C4144.5,1421.2 4145.5,1421.0 4146.0,1421.0Z"/></g><g class="wm__l" style="--i:4"><path d="M4617.5,1401.7C4622.4,1396.1 4621.5,1387.0 4615.7,1382.7C4613.4,1380.9 4610.8,1380.5 4599.0,1379.9C4584.1,1379.1 4580.8,1378.4 4572.0,1374.0C4569.0,1372.5 4563.9,1370.3 4560.8,1369.0C4556.4,1367.3 4553.1,1364.8 4546.5,1358.2C4541.8,1353.5 4537.3,1348.5 4536.5,1347.1C4532.9,1340.1 4528.9,1324.9 4528.0,1315.0C4526.7,1300.7 4526.7,848.8 4528.0,813.5C4529.2,779.5 4529.6,775.2 4532.6,760.5C4535.7,745.8 4537.4,742.6 4549.3,730.6C4556.5,723.3 4559.6,720.9 4563.5,719.5C4566.2,718.6 4572.2,716.0 4576.7,713.8C4584.4,710.1 4585.9,709.8 4599.2,708.6C4607.1,707.9 4614.3,706.9 4615.3,706.5C4617.8,705.4 4620.0,700.7 4620.0,696.3C4620.0,690.9 4616.9,686.3 4612.3,685.0C4609.6,684.2 4567.6,684.0 4466.4,684.2C4328.0,684.5 4324.2,684.6 4322.1,686.4C4318.8,689.4 4317.4,695.2 4318.9,700.0C4320.8,706.3 4323.4,707.4 4338.1,708.1C4350.7,708.8 4350.9,708.8 4361.7,713.8C4367.6,716.5 4373.5,719.1 4374.8,719.5C4378.3,720.5 4390.9,732.1 4395.1,738.2C4405.5,752.9 4406.4,756.6 4408.0,790.0C4409.0,808.9 4409.3,1190.4 4408.5,1279.5C4408.1,1327.2 4406.6,1337.2 4398.5,1348.6C4389.8,1360.7 4383.6,1366.1 4371.0,1372.5L4359.5,1378.3L4344.5,1378.9C4332.3,1379.4 4328.9,1379.9 4326.3,1381.5C4318.6,1386.1 4317.7,1400.1 4324.9,1403.6C4326.7,1404.5 4362.9,1404.8 4471.2,1404.7L4615.2,1404.5L4617.5,1401.7Z"/></g><circle class="wm__dot" cx="3046.9" cy="1046.0" r="70.3" fill="#a3142a"/></svg>
+  <div class="foot__bar"><span>© 2026 URAONI · <span class="kanji" lang="ja">裏鬼</span></span><span>Precios, envíos y devoluciones: al abrir el Drop 01</span></div>
+</footer>
+
+<div class="scrim" id="bagScrim"></div>
+<aside class="bag" id="bag" aria-label="Mi lista" aria-hidden="true">
+  <div class="bag__head"><h2>Mi lista</h2><button class="bag__x" type="button" id="bagX" aria-label="Cerrar mi lista"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3l10 10M13 3 3 13"/></svg></button></div>
+  <div class="bag__body"><div id="bagList"></div><div class="bag__rec" id="bagRec"></div></div>
+  <div class="bag__foot"><p>Tu selección se guarda en este navegador. Cuando abra el Drop 01, la lista de espera tiene prioridad.</p><a class="bag__go" href="#lista" id="bagGo">Ir a la lista de espera</a></div>
+</aside>
+
+<dialog class="lb" id="lb" aria-label="Imagen ampliada">
+  <div id="lbSlot" style="width:100%;height:100%"></div>
+  <button class="lb__x" id="lbX" type="button" aria-label="Cerrar"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3l10 10M13 3 3 13"/></svg></button>
+</dialog>
+
+<script>
+(()=>{
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const load = src => new Promise(r=>{const i=new Image();i.decoding='async';i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src;});
+
+/* ---------- geometry helpers ---------- */
+// clip polygon by half-plane f(p) >= 0 where f is linear
+function clip(poly,f){
+  const out=[];
+  for(let i=0;i<poly.length;i++){
+    const a=poly[i],b=poly[(i+1)%poly.length],fa=f(a),fb=f(b);
+    if(fa>=0) out.push(a);
+    if((fa>=0)!==(fb>=0)){const t=fa/(fa-fb);out.push([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t]);}
+  }
+  return out;
+}
+function path(ctx,poly){ctx.beginPath();poly.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();}
+function cover(ctx,img,x,y,w,h,ax=.5,ay=.5){
+  const s=Math.max(w/img.width,h/img.height),iw=img.width*s,ih=img.height*s;
+  ctx.drawImage(img,x+(w-iw)*ax,y+(h-ih)*ay,iw,ih);
+}
+
+/* ---------- Peel: a cloth lifted from the bottom-right corner ----------
+   fold line: x(y) = W*(f + s*(1 - y/H)); f = fold position at the bottom edge (1 = closed) */
+class Peel{
+  constructor(canvas,opt){
+    Object.assign(this,{s:.5,f:1.08,v:0,target:1.08,curl:.085,drawUnder:()=>{},drawCloth:()=>{},onFrame:()=>{}},opt);
+    this.c=canvas;this.ctx=canvas.getContext('2d');this.dragging=false;this.running=false;
+    this.resize();new ResizeObserver(()=>{this.resize();this.draw();}).observe(canvas);
+  }
+  resize(){
+    const r=this.c.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,matchMedia('(pointer:coarse)').matches?1.5:2);
+    this.W=r.width;this.H=r.height;this.c.width=Math.round(r.width*d);this.c.height=Math.round(r.height*d);
+    this.ctx.setTransform(d,0,0,d,0,0);this.invalidate();
+  }
+  invalidate(){this._u=this._c=null;}
+  layer(k,r){ // the print and the cloth only change on resize or content change: paint them once, then blit
+    const key='_'+k;if(!this[key]){const c=document.createElement('canvas');c.width=this.c.width;c.height=this.c.height;
+      const x=c.getContext('2d'),d=this.c.width/this.W;x.setTransform(d,0,0,d,0,0);
+      (k==='u'?this.drawUnder:this.drawCloth)(x,this.W,this.H);this[key]=c;}
+    const c=this[key],d=c.width/this.W;
+    if(r){let [x,y,w,h]=r;x=Math.max(0,x);y=Math.max(0,y);w=Math.min(this.W-x,w);h=Math.min(this.H-y,h);if(w>0&&h>0)this.ctx.drawImage(c,x*d,y*d,w*d,h*d,x,y,w,h);}
+    else this.ctx.drawImage(c,0,0,this.W,this.H);
+  }
+  x(y){return this.W*(this.f+this.s*(1-y/this.H));}
+  go(t){this.target=t;this.kick();}
+  kick(){if(this.running)return;this.running=true;let last=performance.now();
+    const step=now=>{const dt=Math.min(.032,(now-last)/1000);last=now;
+      if(!this.dragging){const k=150,c=2*Math.sqrt(k)*.82;const a=k*(this.target-this.f)-c*this.v;this.v+=a*dt;this.f+=this.v*dt;}
+      this.draw();this.onFrame(this);
+      if(this.dragging||Math.abs(this.target-this.f)>.0005||Math.abs(this.v)>.002){requestAnimationFrame(step);}else{this.f=this.target;this.draw();this.onFrame(this);this.running=false;}
+    };requestAnimationFrame(step);}
+  draw(){
+    const {ctx,W,H}=this;if(!W||!H)return;
+    const s=this.s,f=this.f,rect=[[0,0],[W,0],[W,H],[0,H]];
+    const F=p=>p[0]-W*(f+s*(1-p[1]/H));               // >0 revealed side
+    const cloth=clip(rect,p=>-F(p));
+    const revealed=clip(rect,F);
+    const open=Math.max(0,W-this.x(H));
+    const w=Math.min(W*this.curl,open*.5);             // horizontal width of the curl
+    // the flap: thin at the bottom anchor, widest about two thirds up, rolling to a tip at the corner
+    const yTop=Math.max(0,Math.min(H,H*(1-(1-f)/s)));     // where the fold leaves through the right edge (or top)
+    const pts=[],N=28;
+    for(let i=0;i<=N;i++){const y=H-(H-yTop)*i/N;pts.push([this.x(y),y]);}
+    for(let i=N;i>=0;i--){const y=H-(H-yTop)*i/N,t=i/N;
+      let ww=w*(.17+.83*Math.sin(Math.PI*Math.min(1,t/.68)*.5))*(t>.68?1-.55*((t-.68)/.32)**2:1);
+      ww=Math.min(ww,Math.max(0,W-this.x(y))*.9);
+      pts.push([this.x(y)-ww,y]);}
+    let flap=clip(clip(pts,p=>p[1]),p=>p[0]-2*this.x(p[1])+W);
+    const nx=1,ny=s*W/H,nl=Math.hypot(nx,ny),n=[nx/nl,ny/nl];
+    const p0=[this.x(H*.55),H*.55];
+    const box=q=>{let a=1e9,b=1e9,c=-1e9,d=-1e9;for(const p of q){a=Math.min(a,p[0]);b=Math.min(b,p[1]);c=Math.max(c,p[0]);d=Math.max(d,p[1]);}return [a-1,b-1,c-a+2,d-b+2];};
+    // the cloth is the ground: blit it whole, then cut the lifted part away
+    if(cloth.length)this.layer('c');else ctx.clearRect(0,0,W,H);
+    const wp=w/nl;
+    if(revealed.length){ctx.save();path(ctx,revealed);ctx.clip();this.layer('u',box(revealed));
+      const bb=box(revealed),g=ctx.createLinearGradient(p0[0],p0[1],p0[0]+n[0]*60,p0[1]+n[1]*60);
+      g.addColorStop(0,'rgba(10,8,6,.55)');g.addColorStop(1,'rgba(10,8,6,0)');ctx.fillStyle=g;ctx.fillRect(...bb);ctx.restore();}
+    // shadow the curl casts on the cloth, only in a band beside it
+    if(w>1&&cloth.length){const band=clip(clip(cloth,p=>F(p)+wp*nl+60),p=>-(F(p)+w*.15));
+      if(band.length>2){ctx.save();path(ctx,band);ctx.clip();const g=ctx.createLinearGradient(p0[0]-n[0]*wp,p0[1]-n[1]*wp,p0[0]-n[0]*(wp+46),p0[1]-n[1]*(wp+46));
+        g.addColorStop(0,'rgba(0,0,0,.55)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(...box(band));ctx.restore();}}
+    // the curl: underside of the cloth rolled back
+    if(flap.length>2&&w>1){const bb=box(flap);ctx.save();path(ctx,flap);ctx.clip();
+      const g=ctx.createLinearGradient(p0[0],p0[1],p0[0]-n[0]*wp,p0[1]-n[1]*wp);
+      ctx.fillStyle=this.under||'#3a3733';ctx.fillRect(...bb);
+      g.addColorStop(0,'rgba(0,0,0,.88)');g.addColorStop(.2,'rgba(0,0,0,.6)');g.addColorStop(.5,'rgba(0,0,0,.18)');g.addColorStop(.62,'rgba(0,0,0,.12)');g.addColorStop(.85,'rgba(0,0,0,.45)');g.addColorStop(1,'rgba(0,0,0,.7)');
+      ctx.fillStyle=g;ctx.fillRect(...bb);
+      ctx.globalCompositeOperation='screen';const hl=ctx.createLinearGradient(p0[0]-n[0]*wp*.45,p0[1]-n[1]*wp*.45,p0[0]-n[0]*wp*.62,p0[1]-n[1]*wp*.62);
+      hl.addColorStop(0,'rgba(237,230,218,0)');hl.addColorStop(.5,'rgba(237,230,218,.10)');hl.addColorStop(1,'rgba(237,230,218,0)');ctx.fillStyle=hl;ctx.fillRect(...bb);
+      ctx.restore();}
+  }
+  // pointer → fold position, keeping the slope
+  fromPoint(px,py){return px/this.W - this.s*(1-py/this.H);}
+  bind(handle,{min,max,snaps,onTap}){
+    let start=null,moved=false,off=0;
+    handle.addEventListener('pointerdown',e=>{
+      const r=this.c.getBoundingClientRect();start=[e.clientX,e.clientY];moved=false;
+      off=this.f-this.fromPoint(e.clientX-r.left,e.clientY-r.top);
+      handle.setPointerCapture(e.pointerId);
+    });
+    handle.addEventListener('pointermove',e=>{
+      if(!start)return;
+      if(!moved&&Math.hypot(e.clientX-start[0],e.clientY-start[1])<6)return;
+      moved=true;this.dragging=true;
+      const r=this.c.getBoundingClientRect();
+      const nf=Math.max(min,Math.min(max,this.fromPoint(e.clientX-r.left,e.clientY-r.top)+off));
+      this.v=(nf-this.f)*60;this.f=nf;this.target=nf;this.kick();
+    });
+    const end=()=>{
+      if(!start)return;start=null;this.dragging=false;
+      if(!moved){onTap&&onTap();return;}
+      const proj=this.f+this.v*.12;let best=snaps[0];
+      snaps.forEach(sn=>{if(Math.abs(sn-proj)<Math.abs(best-proj))best=sn;});
+      this.go(best);
+    };
+    handle.addEventListener('pointerup',end);handle.addEventListener('pointercancel',end);
+  }
+}
+
+/* ---------- HERO ---------- */
+const hero=document.querySelector('.hero'),hc=document.getElementById('heroCanvas');
+const slot=document.getElementById('jacketSlot'),pull=document.getElementById('heroPull');
+const hint=document.getElementById('heroHint'),toggle=document.getElementById('heroToggle');
+Promise.all([load('assets/plates/woodblock.jpg'),load('assets/plates/fabric.jpg'),load('assets/plates/jacket.webp'),load('assets/plates/washi.jpg'),load('assets/plates/fabric-under.jpg')]).then(([wb,fab,jk,wa,fu])=>{
+  const mobile=()=>innerWidth<=860;
+  const st=()=>mobile()?{s:.95,rest:.26,full:.20,min:.16}:{s:.5,rest:.49,full:.36,min:.32};
+  let S=st();
+  const peel=new Peel(hc,{s:S.s,f:RM?S.rest:1.08,target:RM?S.rest:1.08,curl:mobile()?.15:.115});
+  if(fab)peel.pattern=peel.ctx.createPattern(fab,'repeat');
+  if(fu)peel.under=peel.ctx.createPattern(fu,'repeat');
+  const paper=wa&&peel.ctx.createPattern(wa,'repeat');
+  peel.drawUnder=(ctx,W,H)=>{ctx.fillStyle=paper||'#efe2c8';ctx.fillRect(0,0,W,H);if(!wb)return;
+    // the print sits on its sheet so the Oni's head lands inside the lifted corner
+    const m=mobile(),sc=m?W*2.1/wb.width:Math.max(W/wb.width,H/wb.height),iw=wb.width*sc,ih=wb.height*sc;
+    let x0=W*(m?.86:.88)-iw*.70;x0=Math.min(Math.max(x0,W-iw),m?0:W*.18);
+    const y0=m?H*.34:Math.max(0,H*.34-ih*.12);
+    ctx.drawImage(wb,x0,y0,iw,ih);
+    if(!m){ // the sheet's title cartouches, set in the corner of the sheet that lifts first
+      const cx=.898*wb.width,cy=.035*wb.height,cw=.062*wb.width,ch=.19*wb.height,dw=W*.05,dh=dw*ch/cw;
+      ctx.drawImage(wb,cx,cy,cw,ch,W*.94,y0+H*.035,dw,dh);}};
+  peel.drawCloth=(ctx,W,H)=>{
+    ctx.fillStyle='#151515';ctx.fillRect(0,0,W,H);
+    if(peel.pattern){ctx.fillStyle=peel.pattern;ctx.fillRect(0,0,W,H);}
+    const v=ctx.createRadialGradient(W*.4,H*.38,0,W*.4,H*.45,Math.max(W,H)*.75);
+    v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,.32)');ctx.fillStyle=v;ctx.fillRect(0,0,W,H);
+    if(jk){const hr=hero.getBoundingClientRect(),r=slot.getBoundingClientRect();
+      const x=r.left-hr.left,y=r.top-hr.top,s=Math.min(r.width/jk.width,r.height/jk.height),w=jk.width*s,h=jk.height*s;
+      ctx.drawImage(jk,x+(r.width-w)/2,y+(r.height-h)/2,w,h);}
+  };
+  const place=()=>{ // put the grab handle on the curl
+    const y=peel.H*(mobile()?.80:.74),x=peel.x(y)-Math.min(peel.W*peel.curl,Math.max(0,peel.W-peel.x(peel.H))*.42)*.5;
+    pull.style.left=Math.min(peel.W-40,x)+'px';pull.style.top=y+'px';
+    const hy=peel.H*(mobile()?.9:.875)-(mobile()?60:76)*0;
+    hint.style.left=Math.max(16,peel.x(peel.H*.88)-(mobile()?178:196))+'px';hint.style.top=(peel.H*(mobile()?.84:.86))+'px';
+    const isOpen=peel.target<S.rest-.02;
+    hint.style.opacity=(peel.f>1||isOpen)?0:1;
+    toggle.textContent=isOpen?'Volver a cubrir':'Ver el Oni';toggle.setAttribute('aria-pressed',isOpen);
+  };
+  peel.onFrame=place;
+  addEventListener('resize',()=>{const was=peel.target;const old=S;S=st();peel.s=S.s;peel.curl=mobile()?.15:.115;
+    peel.f=peel.target=(was<old.rest-.02)?S.full:(was>1?was:S.rest);peel.invalidate();peel.draw();place();});
+  peel.bind(pull,{min:S.min,max:1.08,snaps:[S.full,S.rest,1.08],onTap:()=>peel.go(peel.target<S.rest-.02?S.rest:S.full)});
+  pull.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();peel.go(peel.target<S.rest-.02?S.rest:S.full);}});
+  toggle.addEventListener('click',()=>peel.go(peel.target<S.rest-.02?S.rest:S.full));
+  peel.draw();place();
+  // the one authored entrance: the cloth lifts at its corner
+  if(!RM)setTimeout(()=>peel.go(S.rest),550);
+  // idle breath on the corner, once, if nobody has touched it
+  let touched=false;pull.addEventListener('pointerdown',()=>touched=true,{once:true});
+  if(!RM)setTimeout(()=>{if(!touched&&Math.abs(peel.target-S.rest)<.001){peel.go(S.rest-.06);setTimeout(()=>{if(!touched)peel.go(S.rest)},700);}},4200);
+});
+
+/* ---------- ZIP (scroll-driven) ---------- */
+const zip=document.getElementById('abre'),zc=document.getElementById('zipClosed'),zp=document.getElementById('zipPull'),steps=[...zip.querySelectorAll('.zip__steps li')];
+let zTick=false,zShown=0;
+const zipUpdate=()=>{zTick=false;
+  const r=zip.getBoundingClientRect(),total=r.height-innerHeight;
+  let goal=Math.max(0,Math.min(1,-r.top/total*1.15));goal=RM?(goal>.15?1:0):goal;
+  zShown+=(goal-zShown)*(RM?1:.22);if(Math.abs(goal-zShown)>.002){zTick=true;requestAnimationFrame(zipUpdate);}else zShown=goal;
+  const p=zShown;
+  const e=p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
+  const depth=e*118,gap=Math.max(0,e-.08)*62;     // % of height / half-width at top
+  zc.style.clipPath=`polygon(0 0,${50-gap}% 0,50% ${depth}%,${50+gap}% 0,100% 0,100% 100%,0 100%)`;
+  if(depth>=104)zc.style.clipPath='polygon(0 0,0 0,0 0)';
+  zp.style.top=Math.max(20.5,Math.min(depth,90))+'%';
+  zp.style.opacity=depth>=98?0:1;
+  steps.forEach(li=>li.classList.toggle('is-on',p>=+li.dataset.at));
+};
+addEventListener('scroll',()=>{if(!zTick){zTick=true;requestAnimationFrame(zipUpdate);}},{passive:true});
+zipUpdate();
+
+/* ---------- DROP 01: perchero + probador ---------- */
+const imgs={};const get=src=>imgs[src]||(imgs[src]=load(src));
+const pieces=[
+  {no:'01',name:'Chaqueta Mataleón',sport:'BJJ',out:'assets/rack/jacket.webp',in:'assets/rack/jacket-open.webp',print:false,inside:'Felpa antracita lisa por fuera. Dentro, forro completo: el Oni con gi y cinturón negro hace un mataleón a un ladrón encapuchado.'},
+  {no:'02',name:'Media cremallera Kuro',sport:'BJJ',out:'assets/rack/halfzip.webp',in:'assets/img/in-cuello.webp',print:true,inside:'Forro del cuello y la tapeta: olas rojas y la cara del Oni. Asoma al bajar la cremallera.'},
+  {no:'03',name:'Bomber Sumi',sport:'Boxeo',out:'assets/rack/bomber.webp',in:'assets/rack/bomber-open.webp',print:false,inside:'Satén negro por fuera. Dentro, el Oni lanzando un gancho en tinta sumi-e sobre forro gris.'},
+  {no:'04',name:'Sobrecamisa Índigo',sport:'Fuerza',out:'assets/rack/overshirt.webp',in:'assets/rack/overshirt-open.webp',print:false,inside:'Algodón crudo para llevar con chinos. Por dentro, el Oni levantando la barra entre olas índigo.'},
+  {no:'05',name:'Capucha Shiro',sport:'BJJ',out:'assets/rack/shiro.webp',in:'assets/img/in-olas.webp',print:true,inside:'Felpa cruda. La capucha va forrada de olas y nubes rojas.'},
+  {no:'06',name:'Camiseta Monograma',sport:'Esencial',out:'assets/rack/tee.webp',in:'assets/img/label.webp',print:true,inside:'La básica: negra, pesada, solo el monograma. Lo de dentro es la etiqueta roja tejida.'}
+];
+const HANGER='<svg viewBox="0 0 120 62" fill="none" stroke="#1f1b18" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M60 26v-6c0-4 6-5 6-10a6 6 0 0 0-12 0"/><path d="M60 26 6 56h108L60 26Z"/></svg>';
+const rack=document.getElementById('drop'),items=document.getElementById('rackItems'),cap=document.getElementById('rackCap');
+setTimeout(()=>setCap(null));
+items.innerHTML=pieces.map((p,i)=>`<button class="hang" type="button" data-i="${i}" aria-label="${p.name}, ${p.sport}. Ver la prenda"><div class="hang__body">${HANGER}<img src="${p.out}" alt="" loading="lazy" draggable="false"></div></button>`).join('');
+const hangs=[...items.children];
+const setCap=i=>{cap.innerHTML=i==null?(innerWidth<=860?'<b>Desliza y toca una prenda</b><span>6 perchas</span>':'<b>Elige una prenda</b><span>6 perchas</span>'):`<b>${pieces[i].name}</b><span>${pieces[i].sport}</span>`;};
+// garments hang side-on and overlapping; the one under the pointer turns to face you and the others step aside.
+// Pointer → garment uses the resting positions, so the chosen one never slides out from under the cursor.
+let hot=null;const narrow=()=>innerWidth<=860;
+const geo=()=>{const W=items.clientWidth,w=hangs[0].offsetWidth,s=w*.76,base=(W-(s*(hangs.length-1)+w))/2;return {w,s,base};};
+function layout(){if(narrow())return;const {w,s,base}=geo(),g=w*.16;
+  hangs.forEach((h,k)=>{const x=base+k*s+(hot==null?0:k<hot?-g:k>hot?g:0);h.style.transform=`translateX(${x}px)`;h.style.zIndex=hot==null?k+1:20-Math.abs(k-hot);});}
+function setHot(k){if(k===hot)return;hot=k;hangs.forEach((h,j)=>h.classList.toggle('is-hot',j===k));items.classList.toggle('has-hot',k!=null);setCap(k);layout();}
+items.addEventListener('pointermove',e=>{if(narrow()||e.pointerType!=='mouse')return;const r=items.getBoundingClientRect(),{w,s,base}=geo();
+  const k=Math.max(0,Math.min(hangs.length-1,Math.round((e.clientX-r.left-base-w/2)/s)));setHot(k);});
+items.addEventListener('pointerleave',()=>{if(!narrow())setHot(null);});
+hangs.forEach((h,i)=>{h.addEventListener('focus',()=>setHot(i));h.addEventListener('click',e=>openFit(hot!=null&&!narrow()&&e.detail?hot:i));});
+new ResizeObserver(layout).observe(items);layout();
+const FAB={
+  '01':'Previsto: felpa de algodón pesada 400–480 g/m², 100 % algodón preencogido. Forro estampado en viscosa o cupro.',
+  '02':'Previsto: felpa de algodón pesada 400–480 g/m², 100 % algodón. Forro del cuello en punto fino estampado.',
+  '03':'Previsto: satén mate de nailon o poliéster con entretela ligera. Forro estampado a todo color.',
+  '04':'Previsto: sarga o lona de algodón cruda, 300–380 g/m². Forro de la espalda estampado.',
+  '05':'Previsto: felpa de algodón cruda 400–480 g/m². Forro de la capucha en punto fino estampado.',
+  '06':'Previsto: punto de algodón peinado 240–300 g/m², 100 % algodón. Monograma bordado.'};
+const CARE=' Lavar a 30 °C del revés, sin lejía ni secadora; planchar a temperatura baja sin pasar por bordados ni estampados.';
+const CLOSE={};
+const fit=document.getElementById('fit'),fOut=document.getElementById('fitOut'),fIn=document.getElementById('fitIn');
+const fNo=document.getElementById('fitNo'),fName=document.getElementById('fitName');
+const viewBtns=[...fit.querySelectorAll('[data-v]')],viewLbl=document.getElementById('fitViewLbl');
+const dots=document.getElementById('fitDots');
+dots.innerHTML=pieces.map((p,i)=>`<button type="button" aria-label="${p.name}" data-i="${i}"></button>`).join('');
+dots.addEventListener('click',e=>{const b=e.target.closest('button');if(b)fill(+b.dataset.i);});
+let fi=0,lastFocus=null,size='M';
+const inSrc=p=>CLOSE[p.no]||p.in;
+const setView=v=>{fit.classList.toggle('is-in',v==='in');viewBtns.forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v));
+  viewLbl.textContent=v==='in'?'Por dentro':'Por fuera';
+  fIn.alt=v==='in'?pieces[fi].name+' por dentro':'';fOut.alt=pieces[fi].name+' por fuera';};
+function fill(i){fi=(i+pieces.length)%pieces.length;const p=pieces[fi];
+  fOut.src=p.out;fIn.src=inSrc(p);fIn.classList.toggle('is-close',p.print);
+  fNo.textContent=`Drop 01 · ${p.no} / 06 · ${p.sport}`;fName.textContent=p.name;
+  document.getElementById('accIn').textContent=p.inside;document.getElementById('accFab').textContent=FAB[p.no]+CARE;
+  document.getElementById('swOut').style.backgroundImage=`url(${p.out})`;document.getElementById('swIn').style.backgroundImage=`url(${inSrc(p)})`;
+  [...dots.children].forEach((d,k)=>d.setAttribute('aria-current',k===fi));
+  setView('out');updAdd();
+  const fig=fit.querySelector('.fit__fig');fig.style.animation='none';fig.offsetHeight;fig.style.animation='';}
+// talla: pista oscura con un tirador que se desliza
+const sz=document.getElementById('fitSizes'),szBtns=[...sz.querySelectorAll('button')],thumb=sz.querySelector('.sz__thumb');
+function placeThumb(){const b=szBtns.find(x=>x.textContent===size);if(!b||!b.offsetWidth)return;thumb.style.width=b.offsetWidth+'px';thumb.style.transform=`translateX(${b.offsetLeft}px)`;}
+function setSize(v,focus){size=v;szBtns.forEach(b=>{const on=b.textContent===v;b.setAttribute('aria-checked',on);b.tabIndex=on?0:-1;if(on&&focus)b.focus();});
+  document.getElementById('fitSizeLbl').textContent=v;placeThumb();updAdd();}
+szBtns.forEach((b,k)=>{b.addEventListener('click',()=>setSize(b.textContent));
+  b.addEventListener('keydown',e=>{const d=e.key==='ArrowRight'||e.key==='ArrowDown'?1:e.key==='ArrowLeft'||e.key==='ArrowUp'?-1:0;if(!d)return;e.preventDefault();e.stopPropagation();setSize(szBtns[(k+d+szBtns.length)%szBtns.length].textContent,true);});});
+new ResizeObserver(placeThumb).observe(sz);
+// mi lista
+const LS='uraoni-lista';let list=[];try{list=JSON.parse(localStorage.getItem(LS)||'[]')||[];}catch(e){list=[];}
+const save=()=>{try{localStorage.setItem(LS,JSON.stringify(list));}catch(e){}};
+const has=()=>list.some(x=>x.no===pieces[fi].no&&x.size===size);
+function updAdd(){document.getElementById('fitAddLbl').textContent=has()?`En tu lista · ${size}`:`Guardar en mi lista · ${size}`;}
+const bagCount=document.getElementById('bagCount'),bagOpenBtn=document.getElementById('bagOpen');
+function renderBag(){const L=document.getElementById('bagList');
+  L.innerHTML=list.length?list.map((x,k)=>{const p=pieces.find(q=>q.no===x.no);return `<div class="bag__item"><img src="${p.out}" alt=""><div><b>${p.name}</b><span>Talla ${x.size} · ${p.sport}</span></div><button class="bag__rm" type="button" data-k="${k}">Quitar</button></div>`;}).join(''):'<p class="bag__empty">Aún no has guardado ninguna prenda. Elige una en el perchero y marca tu talla.</p>';
+  const taken=new Set(list.map(x=>x.no)),rec=pieces.find(p=>!taken.has(p.no));
+  document.getElementById('bagRec').innerHTML=rec?`<h3>Te puede gustar</h3><div class="bag__recard"><img src="${rec.out}" alt=""><div><b style="font-family:var(--serif);font-weight:400;font-size:20px">${rec.name}</b><br><span style="font-size:13px;color:var(--crudo-2)">${rec.sport} · lo de dentro: ${rec.inside.split('.')[0].toLowerCase()}</span><br><button type="button" data-rec="${rec.no}">Verla</button></div></div>`:'';
+  bagCount.textContent=list.length;bagOpenBtn.setAttribute('aria-label',`Mi lista, ${list.length} prendas`);}
+document.getElementById('bagList').addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(!b)return;list.splice(+b.dataset.k,1);save();renderBag();updAdd();});
+document.getElementById('bagRec').addEventListener('click',e=>{const b=e.target.closest('[data-rec]');if(!b)return;closeBag();const i=pieces.findIndex(p=>p.no===b.dataset.rec);if(rack.classList.contains('is-open'))fill(i);else{document.getElementById('drop').scrollIntoView({behavior:RM?'auto':'smooth'});setTimeout(()=>openFit(i),RM?0:500);}});
+const bag=document.getElementById('bag');let bagReturn=null;
+function openBag(){bagReturn=document.activeElement;renderBag();document.body.classList.add('bag-open');bag.setAttribute('aria-hidden','false');setTimeout(()=>document.getElementById('bagX').focus(),60);}
+function closeBag(){document.body.classList.remove('bag-open');bag.setAttribute('aria-hidden','true');bagReturn&&bagReturn.focus&&bagReturn.focus({preventScroll:true});}
+bagOpenBtn.addEventListener('click',e=>{e.preventDefault();openBag();});
+document.getElementById('bagX').addEventListener('click',closeBag);document.getElementById('bagScrim').addEventListener('click',closeBag);
+document.getElementById('bagGo').addEventListener('click',()=>{closeBag();if(rack.classList.contains('is-open'))closeFit();});
+document.getElementById('fitAdd').addEventListener('click',()=>{if(!has()){list.push({no:pieces[fi].no,size});save();}
+  renderBag();updAdd();bagCount.classList.remove('bump');bagCount.offsetWidth;bagCount.classList.add('bump');openBag();});
+renderBag();
+function openFit(i){lastFocus=document.activeElement;fill(i);fit.hidden=false;requestAnimationFrame(()=>{rack.classList.add('is-open');placeThumb();});
+  if(innerWidth<=860){document.body.style.overflow='hidden';fit.scrollTop=0;}else{const r=rack.querySelector('.rack__wrap').getBoundingClientRect();if(r.top<0||r.top+Math.min(760,innerHeight*.88)>innerHeight)scrollTo({top:scrollY+r.top-76,behavior:RM?'auto':'smooth'});}
+  setTimeout(()=>{placeThumb();document.getElementById('fitX').focus({preventScroll:true});},80);}
+function closeFit(){rack.classList.remove('is-open');document.body.style.overflow='';setTimeout(()=>{if(!rack.classList.contains('is-open'))fit.hidden=true;},460);lastFocus&&lastFocus.focus({preventScroll:true});}
+viewBtns.forEach(b=>b.addEventListener('click',()=>setView(b.dataset.v)));
+document.getElementById('fitPrev').addEventListener('click',()=>fill(fi-1));
+document.getElementById('fitNext').addEventListener('click',()=>fill(fi+1));
+document.getElementById('fitX').addEventListener('click',closeFit);
+document.getElementById('fitZoom').addEventListener('click',()=>{const inside=fit.classList.contains('is-in');openLB(inside?inSrc(pieces[fi]):pieces[fi].out,pieces[fi].name+(inside?' por dentro':' por fuera'));});
+fit.querySelector('.fit__box').addEventListener('click',e=>{if(e.target.closest('button'))return;setView(fit.classList.contains('is-in')?'out':'in');});
+addEventListener('keydown',e=>{
+  if(document.body.classList.contains('bag-open')){if(e.key==='Escape')closeBag();return;}
+  if(!rack.classList.contains('is-open')||document.getElementById('lb').open)return;
+  if(e.target.closest&&e.target.closest('.sz'))return;
+  if(e.key==='Escape')closeFit();else if(e.key==='ArrowRight')fill(fi+1);else if(e.key==='ArrowLeft')fill(fi-1);});
+// swipe between pieces on phones (only on the garment, so the panel can scroll)
+let sx=null;const stg=fit.querySelector('.fit__stage');stg.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;},{passive:true});
+stg.addEventListener('touchend',e=>{if(sx==null)return;const dx=e.changedTouches[0].clientX-sx;sx=null;if(Math.abs(dx)>60)fill(fi+(dx<0?1:-1));},{passive:true});
+pieces.forEach(p=>{get(inSrc(p));});
+{const ft=document.querySelector('.foot');if(!RM&&'IntersectionObserver' in window){ft.classList.add('is-pre');
+  new IntersectionObserver((es,o)=>{es.forEach(en=>{if(en.isIntersecting){ft.classList.remove('is-pre');o.disconnect();}});},{threshold:.35}).observe(ft.querySelector('.foot__mark'));}}
+document.getElementById('footPieces').innerHTML=pieces.map((p,i)=>`<li><button type="button" data-open="${i}">${p.name}</button></li>`).join('');
+document.getElementById('footPieces').addEventListener('click',e=>{const b=e.target.closest('[data-open]');if(!b)return;document.getElementById('drop').scrollIntoView({behavior:RM?'auto':'smooth'});setTimeout(()=>openFit(+b.dataset.open),RM?0:600);});
+
+/* ---------- LINTERNA ---------- */
+document.querySelectorAll('.tee__img').forEach((el,k)=>{
+  let raf=0,auto=true,t=k*1.7;
+  const set=(x,y)=>{el.style.setProperty('--x',x+'%');el.style.setProperty('--y',y+'%');};
+  el.addEventListener('pointermove',e=>{auto=false;const r=el.getBoundingClientRect();set((e.clientX-r.left)/r.width*100,(e.clientY-r.top)/r.height*100);});
+  el.addEventListener('pointerleave',()=>{auto=true;});
+  // on phones the finger scrolls the page: read the touch anyway (passive) so the light follows it
+  let resume=0;const tp=e=>{const t=e.touches[0];if(!t)return;auto=false;clearTimeout(resume);const r=el.getBoundingClientRect();set((t.clientX-r.left)/r.width*100,(t.clientY-r.top)/r.height*100);};
+  el.addEventListener('touchstart',tp,{passive:true});el.addEventListener('touchmove',tp,{passive:true});
+  el.addEventListener('touchend',()=>{resume=setTimeout(()=>auto=true,1600);},{passive:true});
+  if(RM){set(50,40);return;}
+  const io=new IntersectionObserver(([en])=>{cancelAnimationFrame(raf);if(!en.isIntersecting)return;
+    const loop=()=>{if(auto){t+=.011;set(50+Math.sin(t)*26,38+Math.sin(t*1.7)*18);}raf=requestAnimationFrame(loop);};loop();});
+  io.observe(el);
+});
+
+/* ---------- HANNYA toggles ---------- */
+document.querySelectorAll('[data-hp]').forEach(hp=>{
+  const box=hp.querySelector('.hp__img'),im=[...box.querySelectorAll('img')],bt=[...hp.querySelectorAll('.seg button')];
+  if(hp.classList.contains('hp--plain')){ // the tee has no lining: just front and the two backs
+    bt.forEach((b,i)=>b.addEventListener('click',()=>{bt.forEach((x,j)=>x.setAttribute('aria-pressed',i===j));im.forEach((x,j)=>x.classList.toggle('is-on',i===j));}));
+    const zoom=()=>{const on=box.querySelector('img.is-on');openLB(on.src,on.alt);};
+    box.style.cursor='zoom-in';box.addEventListener('click',zoom);hp.querySelector('.hp__zoom').addEventListener('click',zoom);return;}
+  const cv=document.createElement('canvas');cv.setAttribute('role','img');box.append(cv);
+  let on=0,lining=null;get('assets/img/in-olas.webp').then(i=>{lining=i;p.invalidate();p.draw();});
+  const FINE=matchMedia('(hover:hover) and (pointer:fine)').matches,REST=FINE?1.08:.8;
+  const p=new Peel(cv,{s:.32,f:REST,target:REST,curl:.12});
+  p.drawUnder=(ctx,W,H)=>{ctx.fillStyle='#8a1426';ctx.fillRect(0,0,W,H);if(lining)cover(ctx,lining,0,0,W,H);};
+  p.drawCloth=(ctx,W,H)=>{ctx.fillStyle='#8d8478';ctx.fillRect(0,0,W,H);const i=im[on];if(i.complete&&i.naturalWidth)cover(ctx,i,0,0,W,H);};
+  const label=()=>cv.setAttribute('aria-label',im[on].alt+(p.target<.2?', vista del forro de olas rojas':''));
+  p.onFrame=label;
+  im.forEach(i=>{i.loading='eager';i.addEventListener('load',()=>{p.invalidate();p.draw();});});
+  const flipP=()=>p.go(p.target<.2?REST:-.38);
+  p.bind(cv,{min:-.38,max:1.08,snaps:FINE?[-.38,1.08]:[-.38,.8],onTap:flipP});
+  cv.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'&&p.target>.2)p.go(.42);});
+  cv.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'&&!p.dragging&&p.target>.2)p.go(REST);});
+  bt.forEach((b,i)=>b.addEventListener('click',()=>{bt.forEach((x,j)=>x.setAttribute('aria-pressed',i===j));on=i;p.invalidate();p.go(REST);p.draw();label();}));
+  hp.querySelector('.hp__zoom').addEventListener('click',()=>openLB(im[on].src,im[on].alt));
+  label();
+});
+
+/* ---------- LIGHTBOX ---------- */
+const lb=document.getElementById('lb'),lbImg=new Image();lbImg.className='lb__img';document.getElementById('lbSlot').append(lbImg);
+function openLB(src,alt){lbImg.src=src;lbImg.alt=alt||'';lb.showModal();}
+document.querySelectorAll('[data-lb]').forEach(el=>el.addEventListener('click',()=>openLB(el.dataset.lb,el.dataset.lbAlt)));
+document.getElementById('lbX').addEventListener('click',()=>lb.close());
+lb.addEventListener('click',e=>{if(e.target===lb||e.target===lbImg)lb.close();});
+
+/* ---------- WAITLIST ---------- */
+document.querySelectorAll('[data-join]').forEach(form=>{
+  const input=form.querySelector('input'),msg=form.nextElementSibling,done=msg.nextElementSibling;
+  form.addEventListener('submit',e=>{e.preventDefault();
+    const v=input.value.trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){input.setAttribute('aria-invalid','true');msg.classList.add('is-error');
+      msg.textContent=v?'Ese correo no parece completo. Revisa que lleve @ y dominio, por ejemplo nombre@gmail.com.':'Escribe tu correo para apuntarte.';input.focus();return;}
+    input.removeAttribute('aria-invalid');msg.textContent='';msg.classList.remove('is-error');
+    document.querySelectorAll('[data-join]').forEach(f=>{f.classList.add('is-done');f.nextElementSibling.textContent='';f.nextElementSibling.nextElementSibling.classList.add('is-on');});
+  });
+  input.addEventListener('input',()=>{if(input.getAttribute('aria-invalid')){input.removeAttribute('aria-invalid');msg.textContent='';msg.classList.remove('is-error');}});
+});
+})();
+</script>
+</body>
+</html>

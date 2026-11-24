@@ -1,0 +1,25 @@
+# Muestra los registros de Caddy y el estado del servidor (solo lectura).
+# GitHub → Actions → "Ver registros del servidor" → Run workflow.
+name: Ver registros del servidor
+
+on:
+  workflow_dispatch:
+
+jobs:
+  registros:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      HOST: 194.26.100.38
+    steps:
+      - name: Preparar el acceso SSH
+        env:
+          KEY: ${{ secrets.SERVER_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -t ed25519 "$HOST" > ~/.ssh/known_hosts 2>/dev/null
+          printf 'Host srv\n  HostName %s\n  User root\n  BatchMode yes\n  ConnectTimeout 20\n' "$HOST" > ~/.ssh/config
+      - name: Registros
+        run: |
+          ssh srv 'systemctl status caddy --no-pager | head -15; journalctl -u caddy -n 120 --no-pager; df -h / | tail -1'

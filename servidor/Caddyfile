@@ -1,0 +1,23 @@
+# Caddy sirve uraoni.es con HTTPS automático (Let's Encrypt).
+# La web vive en /var/www/uraoni (la sube GitHub Actions desde este repositorio).
+uraoni.es {
+	root * /var/www/uraoni
+	encode zstd gzip
+	file_server
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		X-Frame-Options "SAMEORIGIN"
+	}
+	# Imágenes y tipografías: un mes en caché. La página siempre fresca.
+	@static path /assets/* /fonts/* /favicon.png
+	header @static Cache-Control "public, max-age=2592000"
+	header /index.html Cache-Control "no-cache"
+	header / Cache-Control "no-cache"
+}
+
+www.uraoni.es {
+	redir https://uraoni.es{uri} permanent
+}
