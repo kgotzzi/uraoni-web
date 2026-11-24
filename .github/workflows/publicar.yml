@@ -36,9 +36,10 @@ jobs:
 
       - name: Subir la web y la configuración
         run: |
-          tar czf web.tgz index.html favicon.png fonts assets
+          tar czf web.tgz index.html privacidad.html favicon.png fonts assets
           scp -q web.tgz srv:/tmp/uraoni-web.tgz
           scp -q servidor/Caddyfile srv:/tmp/uraoni-Caddyfile
+          scp -q servidor/lista/lista.py servidor/lista/uraoni-lista.service srv:/tmp/
 
       - name: Publicar en el servidor
         run: |
@@ -60,13 +61,23 @@ jobs:
           chmod -R a+rX /var/www/uraoni
           rm -rf "$nuevo" /tmp/uraoni-web.tgz
 
-          # 3. Comprobar el Caddyfile nuevo antes de aplicarlo
+          # 3. Lista de espera (guarda los correos y envía la confirmación)
+          install -D -m 644 /tmp/lista.py /opt/uraoni-lista/lista.py
+          install -m 644 /tmp/uraoni-lista.service /etc/systemd/system/uraoni-lista.service
+          rm -f /tmp/lista.py /tmp/uraoni-lista.service
+          systemctl daemon-reload
+          systemctl enable uraoni-lista >/dev/null 2>&1
+          systemctl restart uraoni-lista
+          for i in $(seq 1 10); do curl -fs http://127.0.0.1:8787/api/salud >/dev/null && break; sleep 1; done
+          curl -fs http://127.0.0.1:8787/api/salud >/dev/null || { echo "::error::La lista de espera no arranca"; journalctl -u uraoni-lista -n 40 --no-pager; exit 1; }
+
+          # 4. Comprobar el Caddyfile nuevo antes de aplicarlo
           caddy validate --config /tmp/uraoni-Caddyfile --adapter caddyfile
           cp /tmp/uraoni-Caddyfile /etc/caddy/Caddyfile && rm -f /tmp/uraoni-Caddyfile
           systemctl enable --now caddy
           systemctl reload caddy || systemctl restart caddy
 
-          # 4. Responde en el propio servidor (HTTP redirige a HTTPS: 308 es correcto)
+          # 5. Responde en el propio servidor (HTTP redirige a HTTPS: 308 es correcto)
           ok=0
           for i in $(seq 1 15); do
             code=$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: uraoni.es' http://127.0.0.1/ || true)

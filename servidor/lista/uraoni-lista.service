@@ -1,0 +1,26 @@
+[Unit]
+Description=URAONI · lista de espera (guarda correos y envía la confirmación)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/bin/python3 /opt/uraoni-lista/lista.py
+EnvironmentFile=-/etc/uraoni/lista.env
+Environment=SITE=https://uraoni.es
+DynamicUser=yes
+StateDirectory=uraoni-lista
+StateDirectoryMode=0700
+Restart=always
+RestartSec=3
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+MemoryMax=128M
+
+[Install]
+WantedBy=multi-user.target

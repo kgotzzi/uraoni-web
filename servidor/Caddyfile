@@ -1,9 +1,7 @@
 # Caddy sirve uraoni.es con HTTPS automático (Let's Encrypt).
 # La web vive en /var/www/uraoni (la sube GitHub Actions desde este repositorio).
 uraoni.es {
-	root * /var/www/uraoni
 	encode zstd gzip
-	file_server
 
 	header {
 		Strict-Transport-Security "max-age=31536000"
@@ -11,6 +9,18 @@ uraoni.es {
 		Referrer-Policy "strict-origin-when-cross-origin"
 		X-Frame-Options "SAMEORIGIN"
 	}
+
+	# Lista de espera: servicio servidor/lista/lista.py
+	handle /api/* {
+		reverse_proxy 127.0.0.1:8787
+	}
+
+	handle {
+		root * /var/www/uraoni
+		try_files {path} {path}.html
+		file_server
+	}
+
 	# Imágenes y tipografías: un mes en caché. La página siempre fresca.
 	@static path /assets/* /fonts/* /favicon.png
 	header @static Cache-Control "public, max-age=2592000"
@@ -20,4 +30,11 @@ uraoni.es {
 
 www.uraoni.es {
 	redir https://uraoni.es{uri} permanent
+}
+
+# Correo (Mailcow): webmail y panel en https://mail.uraoni.es
+# Mailcow escucha solo en local (8080); Caddy pone el HTTPS y comparte el certificado
+# con el correo (lo copia servidor/correo/certs.sh).
+mail.uraoni.es, autodiscover.uraoni.es, autoconfig.uraoni.es {
+	reverse_proxy 127.0.0.1:8080
 }

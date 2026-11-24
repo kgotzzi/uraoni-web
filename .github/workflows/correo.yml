@@ -1,0 +1,49 @@
+# Instala o actualiza el correo de uraoni.es (Mailcow en Docker) en el servidor.
+# Se lanza sola cuando cambia servidor/correo/, o a mano: GitHub → Actions → "Correo (Mailcow)" → Run workflow.
+# Secretos:
+#   SERVER_SSH_KEY  (obligatorio) la misma clave que usa "Publicar en uraoni.es".
+#   MAIL_PASSWORD   (opcional)   contraseña que quieres para hola@uraoni.es y para el panel (usuario admin).
+#                                Si no existe, se genera una al azar y queda solo en el servidor (/root/uraoni-correo.txt).
+name: Correo (Mailcow)
+
+on:
+  push:
+    branches: [main]
+    paths: ["servidor/correo/**", ".github/workflows/correo.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: correo
+  cancel-in-progress: false
+
+jobs:
+  correo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      HOST: 194.26.100.38
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Preparar el acceso SSH
+        env:
+          KEY: ${{ secrets.SERVER_SSH_KEY }}
+        run: |
+          if [ -z "$KEY" ]; then echo "::error::Falta el secreto SERVER_SSH_KEY."; exit 1; fi
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -t ed25519 "$HOST" > ~/.ssh/known_hosts 2>/dev/null
+          printf 'Host srv\n  HostName %s\n  User root\n  BatchMode yes\n  ConnectTimeout 20\n  ServerAliveInterval 30\n' "$HOST" > ~/.ssh/config
+
+      - name: Subir los scripts (y la contraseña, si hay secreto)
+        env:
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+        run: |
+          ssh srv 'rm -rf /tmp/uraoni-correo && mkdir -m 700 /tmp/uraoni-correo'
+          scp -q servidor/correo/instalar.sh servidor/correo/certs.sh srv:/tmp/uraoni-correo/
+          if [ -n "$MAIL_PASSWORD" ]; then
+            printf '%s' "$MAIL_PASSWORD" | ssh srv 'umask 077; cat > /root/.uraoni-mailpass'
+          fi
+
+      - name: Instalar o actualizar Mailcow
+        run: ssh srv 'bash /tmp/uraoni-correo/instalar.sh; r=$?; rm -rf /tmp/uraoni-correo /root/.uraoni-mailpass; exit $r'
