@@ -168,10 +168,10 @@ def notify_new(email: str):
 def send_summary():
     filas = activos()
     lineas = "\n".join(f"{i:>4}. {e}   ({a[8:10]}/{a[5:7]}/{a[0:4]} {a[11:16]})" for i, (e, a) in enumerate(filas, 1))
-    _aviso(f"Lista de espera URAONI: {len(filas)} personas",
+    _aviso(f"Lista de espera URAONI: {len(filas)} " + ("persona" if len(filas) == 1 else "personas"),
            f"Personas apuntadas a la lista de espera del Drop 01 ({len(filas)}), de la más antigua a la más reciente:\n\n"
            f"{lineas or '  (todavía nadie)'}\n\nNo incluye a quien se ha dado de baja.\n")
-    log(f"lista: resumen enviado a {NOTIFY_TO} ({len(filas)} personas)")
+    log(f"lista: resumen enviado a {NOTIFY_TO} ({len(filas)})")
 
 
 def send_confirmation(email: str, token: str):
