@@ -227,6 +227,20 @@ CNAME  autoconfig             $HOST_CORREO
 SRV    _autodiscover._tcp     0 1 443 $HOST_CORREO
 EOF
 
+paso "Comprobación del DNS (desde fuera, con 1.1.1.1)"
+command -v dig >/dev/null || apt-get install -y -q dnsutils >/dev/null
+mira(){ printf '%-22s %s\n' "$1 $2" "$(dig +short @1.1.1.1 "$2" "$1" | tr '\n' ' ' | cut -c1-110)"; }
+mira A mail.$DOMINIO; mira MX $DOMINIO; mira TXT $DOMINIO; mira TXT dkim._domainkey.$DOMINIO; mira TXT _dmarc.$DOMINIO
+mira CNAME autodiscover.$DOMINIO; mira CNAME autoconfig.$DOMINIO; mira PTR "$(echo 194.26.100.38 | awk -F. '{print $4"."$3"."$2"."$1".in-addr.arpa"}')"
+
+paso "Certificado HTTPS de mail.uraoni.es"
+if ! find /var/lib/caddy/.local/share/caddy/certificates -type d -name "$HOST_CORREO" 2>/dev/null | grep -q .; then
+  systemctl reload caddy || true    # que Caddy vuelva a intentarlo ya, sin esperar a su reintento
+  for i in $(seq 1 18); do find /var/lib/caddy/.local/share/caddy/certificates -type d -name "$HOST_CORREO" 2>/dev/null | grep -q . && break; sleep 10; done
+fi
+/usr/local/bin/uraoni-certs-correo || true
+echo | openssl s_client -connect 127.0.0.1:587 -starttls smtp -servername $HOST_CORREO 2>/dev/null | openssl x509 -noout -subject -issuer -enddate 2>/dev/null || echo "Sin certificado todavía en el puerto 587"
+
 paso "Prueba de salida por el puerto 25 (CubePath lo bloquea hasta que lo pidas)"
 if timeout 8 bash -c 'echo > /dev/tcp/gmail-smtp-in.l.google.com/25' 2>/dev/null; then
   echo "Puerto 25 de salida: ABIERTO. Los correos ya pueden salir."
