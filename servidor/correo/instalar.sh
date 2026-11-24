@@ -239,7 +239,25 @@ if ! find /var/lib/caddy/.local/share/caddy/certificates -type d -name "$HOST_CO
   for i in $(seq 1 18); do find /var/lib/caddy/.local/share/caddy/certificates -type d -name "$HOST_CORREO" 2>/dev/null | grep -q . && break; sleep 10; done
 fi
 /usr/local/bin/uraoni-certs-correo || true
-echo | openssl s_client -connect 127.0.0.1:587 -starttls smtp -servername $HOST_CORREO 2>/dev/null | openssl x509 -noout -subject -issuer -enddate 2>/dev/null || echo "Sin certificado todavía en el puerto 587"
+python3 - "$ENVF" <<'PY'
+import smtplib,ssl,sys
+env=dict(l.strip().split('=',1) for l in open(sys.argv[1]) if '=' in l)
+ctx=ssl.create_default_context(); ctx.check_hostname=False; ctx.verify_mode=ssl.CERT_NONE
+try:
+    with smtplib.SMTP('127.0.0.1',587,timeout=20) as s:
+        s.starttls(context=ctx)
+        c=s.sock.getpeercert(binary_form=True)
+        from hashlib import sha256
+        s.login(env['SMTP_USER'],env['SMTP_PASS'])
+        print('Puerto 587: STARTTLS y usuario noreply correctos')
+except Exception as e:
+    print('::warning::Puerto 587 falla:',repr(e))
+PY
+openssl x509 -in "$MC/data/assets/ssl/cert.pem" -noout -subject -issuer -enddate 2>/dev/null || true
+echo "--- Últimos registros de la lista de espera"
+journalctl -u uraoni-lista -n 15 --no-pager -o cat || true
+echo "--- Cola de correo"
+docker compose exec -T postfix-mailcow postqueue -p 2>/dev/null | tail -5 || true
 
 paso "Prueba de salida por el puerto 25 (CubePath lo bloquea hasta que lo pidas)"
 if timeout 8 bash -c 'echo > /dev/tcp/gmail-smtp-in.l.google.com/25' 2>/dev/null; then
