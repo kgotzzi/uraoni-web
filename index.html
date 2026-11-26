@@ -14,7 +14,6 @@
 @font-face{font-family:"Hanken Grotesk";src:url(fonts/hanken-grotesk-latin-300-normal.woff2) format("woff2");font-weight:300;font-display:swap}
 @font-face{font-family:"Hanken Grotesk";src:url(fonts/hanken-grotesk-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"Hanken Grotesk";src:url(fonts/hanken-grotesk-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
-@font-face{font-family:"Archivo Condensed";src:url(fonts/archivo-condensed-880.woff2) format("woff2");font-weight:880;font-display:swap}
 @font-face{font-family:"Kanji";src:url(fonts/kanji-Regular.woff2) format("woff2");font-weight:400;font-display:block}
 @font-face{font-family:"Kanji";src:url(fonts/kanji-Bold.woff2) format("woff2");font-weight:700;font-display:block}
 
@@ -337,10 +336,10 @@ dialog.lb[open] .lb__img{animation:lbin .35s var(--ease-out)}
 }
 
 /* ---------- HANNYA y EL CÓDIGO (titulares condensados) ---------- */
-.cond{font-family:"Archivo Condensed","Arial Narrow",sans-serif;font-weight:880;text-transform:uppercase;letter-spacing:-.01em;line-height:.84}
-.h2c{font-size:clamp(64px,11.4vw,176px);color:var(--crudo)}
+.cond{font-family:var(--serif);font-weight:400;letter-spacing:-.015em;line-height:.9}
+.h2c{font-size:clamp(64px,10.4vw,168px);color:var(--crudo)}
 .kj{font-family:var(--kanji);font-weight:700}
-.kj--red{color:#e5484d;font-size:.86em;letter-spacing:.02em;text-transform:none}
+.kj--red{color:#e5484d;font-size:.8em;letter-spacing:.02em}
 .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap}
 .rv{overflow:hidden;display:block;padding:.14em 0 .04em;margin-top:-.14em}
 .rv>span{display:block;transform:translateY(105%);transition:transform 1s var(--ease-out)}
@@ -371,8 +370,8 @@ dialog.lb[open] .lb__img{animation:lbin .35s var(--ease-out)}
 .hc h3{font-family:var(--sans);font-weight:500;font-size:17px}
 .hc p{color:var(--crudo-2);font-size:14.5px;line-height:1.55}
 .hc .pseg{margin-top:2px}
-.cdg{position:relative;min-height:100svh;padding:14svh var(--pad);overflow:hidden;background:#120f0e}
-.cdg .olas{position:absolute;inset:0;background:url(assets/img/in-olas.webp) 0 0/520px repeat;filter:grayscale(1) brightness(1.5);opacity:.07;-webkit-mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);pointer-events:none}
+.cdg{position:relative;min-height:100svh;padding:14svh var(--pad);overflow:hidden;background:#130f0e}
+.cdg .olas{position:absolute;inset:0;background:url(assets/img/in-olas.webp) 0 0/520px repeat;filter:saturate(.55) brightness(.9);opacity:.075;-webkit-mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);pointer-events:none}
 .cdg .sec-head{position:relative}
 .cdg .lede{max-width:40ch;margin-top:0}
 .cdg__grid{position:relative;list-style:none;display:grid;grid-template-columns:repeat(3,1fr);margin-top:8svh;border-top:1px solid rgba(237,230,218,.14)}
