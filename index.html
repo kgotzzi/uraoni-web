@@ -363,9 +363,10 @@ dialog.lb[open] .lb__img{animation:lbin .35s var(--ease-out)}
 .h-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.6vw,24px)}
 .hc{display:flex;flex-direction:column;gap:14px}
 .hc:nth-child(2){transition-delay:.08s}.hc:nth-child(3){transition-delay:.16s}
-.hc .ph{position:relative;aspect-ratio:928/1152;border-radius:6px;overflow:hidden;background:#959086;cursor:zoom-in}
+.hc .ph{position:relative;border-radius:6px;overflow:hidden;background:#959086;cursor:zoom-in}
 .hc .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .45s ease,filter .45s ease,transform .7s var(--ease-out)}
 .hc .ph img.off{opacity:0;filter:blur(6px)}
+.hc .ph img:first-child{position:relative;display:block;height:auto;aspect-ratio:928/1152}
 @media (hover:hover) and (pointer:fine){.hc:hover .ph img{transform:scale(1.03)}.h-hero:hover img{transform:scale(1.02)}}
 .hc h3{font-family:var(--sans);font-weight:500;font-size:17px}
 .hc p{color:var(--crudo-2);font-size:14.5px;line-height:1.55}
@@ -388,7 +389,8 @@ dialog.lb[open] .lb__img{animation:lbin .35s var(--ease-out)}
 .word p{color:var(--crudo-2);margin-top:8px;max-width:30ch}
 @media (max-width:980px){
   .h-grid{grid-template-columns:1fr}
-  .h-hero{min-height:0;aspect-ratio:4/5}
+  .h-hero{min-height:0;align-self:start}
+  .h-hero img{position:relative;display:block;height:auto;aspect-ratio:4/5}
   .h-cards{grid-template-columns:1fr 1fr}
   .cdg__grid{grid-template-columns:1fr}
   .word{border-right:0;border-bottom:1px solid rgba(237,230,218,.14);padding:4svh 0;display:grid;grid-template-columns:auto 1fr;column-gap:24px;align-items:end}
@@ -461,8 +463,8 @@ dialog.lb[open] .lb__img{animation:lbin .35s var(--ease-out)}
       </ol>
     </div>
     <figure class="zip__frame" id="zipFrame" data-lb="assets/img/jacket-open.webp" data-lb-alt="Chaqueta Mataleón abierta, con el forro del Oni">
-      <img src="assets/img/jacket-open.webp" alt="Chaqueta Mataleón abierta: forro rojo y crudo con el Oni haciendo un mataleón" width="928" height="1152" loading="lazy">
-      <img class="zip__closed" id="zipClosed" src="assets/img/jacket-closed.webp" alt="" width="928" height="1152" loading="lazy">
+      <img src="assets/img/jacket-open.webp" alt="Chaqueta Mataleón abierta: forro rojo y crudo con el Oni haciendo un mataleón" width="886" height="1100" loading="lazy">
+      <img class="zip__closed" id="zipClosed" src="assets/img/jacket-closed.webp" alt="" width="886" height="1100" loading="lazy">
       <img class="zip__pull" id="zipPull" src="assets/plates/zip-pull.png" alt="" width="112" height="232">
     </figure>
   </div>
@@ -570,20 +572,20 @@ dialog.lb[open] .lb__img{animation:lbin .35s var(--ease-out)}
     </div>
   </div>
   <div class="h-grid">
-    <div class="h-hero fade" data-lb="assets/img/w-campaign.webp" data-lb-alt="Mujer con la capucha corta Hannya negra, forro de olas rojas en la capucha"><img src="assets/img/w-campaign.webp" alt="Mujer con la capucha corta Hannya negra, forro de olas rojas en la capucha" loading="lazy"><span class="kj" aria-hidden="true">般若</span></div>
+    <div class="h-hero fade" data-lb="assets/img/w-campaign.webp" data-lb-alt="Mujer con la capucha corta Hannya negra, forro de olas rojas en la capucha"><img src="assets/img/w-campaign.webp" width="886" height="1100" alt="Mujer con la capucha corta Hannya negra, forro de olas rojas en la capucha" loading="lazy"><span class="kj" aria-hidden="true">般若</span></div>
     <div class="h-cards">
       <article class="hc fade">
-        <div class="ph" data-ph><img src="assets/img/w-crop-black.webp" data-negro="assets/img/w-crop-black.webp" data-crudo="assets/img/w-crop-crudo.webp" data-alt-negro="Capucha corta Hannya en negro" data-alt-crudo="Capucha corta Hannya en crudo" alt="Capucha corta Hannya en negro" loading="lazy"></div>
+        <div class="ph" data-ph><img width="886" height="1100" src="assets/img/w-crop-black.webp" data-negro="assets/img/w-crop-black.webp" data-crudo="assets/img/w-crop-crudo.webp" data-alt-negro="Capucha corta Hannya en negro" data-alt-crudo="Capucha corta Hannya en crudo" alt="Capucha corta Hannya en negro" loading="lazy"></div>
         <h3>Capucha corta</h3>
         <p>Sin cremallera ni botones. Forro de la capucha con olas y nubes rojas.</p>
       </article>
       <article class="hc fade">
-        <div class="ph" data-ph><img src="assets/img/w-snap-black.webp" data-negro="assets/img/w-snap-black.webp" data-crudo="assets/img/w-snap-crudo.webp" data-alt-negro="Capucha Hannya con botones a presión en negro" data-alt-crudo="Capucha Hannya con botones a presión en crudo" alt="Capucha Hannya con botones a presión en negro" loading="lazy"></div>
+        <div class="ph" data-ph><img width="886" height="1100" src="assets/img/w-snap-black.webp" data-negro="assets/img/w-snap-black.webp" data-crudo="assets/img/w-snap-crudo.webp" data-alt-negro="Capucha Hannya con botones a presión en negro" data-alt-crudo="Capucha Hannya con botones a presión en crudo" alt="Capucha Hannya con botones a presión en negro" loading="lazy"></div>
         <h3>Capucha con botones</h3>
         <p>Tapeta con botones a presión y el mismo forro de olas en la capucha.</p>
       </article>
       <article class="hc fade">
-        <div class="ph" id="hTeePh" data-ph><img src="assets/img/w-tee.webp" alt="Camiseta de cuello alto Hannya, delante" loading="lazy"><img class="off" src="assets/img/w-tee-kanji.webp" alt="Camiseta de cuello alto Hannya, espalda con el kanji 般若 en rojo" loading="lazy"><img class="off" src="assets/img/w-tee-relief.webp" alt="Camiseta de cuello alto Hannya, espalda con relieve negro" loading="lazy"></div>
+        <div class="ph" id="hTeePh" data-ph><img width="886" height="1100" src="assets/img/w-tee.webp" alt="Camiseta de cuello alto Hannya, delante" loading="lazy"><img class="off" src="assets/img/w-tee-kanji.webp" alt="Camiseta de cuello alto Hannya, espalda con el kanji 般若 en rojo" loading="lazy"><img class="off" src="assets/img/w-tee-relief.webp" alt="Camiseta de cuello alto Hannya, espalda con relieve negro" loading="lazy"></div>
         <h3>Camiseta cuello alto</h3>
         <p>Punto fino con elasticidad y cinta roja en el cuello. Dos espaldas: el kanji <span class="kj" lang="ja">般若</span> en rojo o el relieve negro.</p>
         <div class="pseg pseg--mini" id="hTee" style="--n:3;--i:0" role="group" aria-label="Vista de la camiseta">
